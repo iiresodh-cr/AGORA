@@ -1,0 +1,5128 @@
+/* ============================================================
+   ÁGORA · Sections
+   Composition rule: the 12-column field is never filled evenly.
+   Each section picks a different span and offset so the page has
+   a horizontal rhythm instead of one centred column.
+   ============================================================ */
+
+/* ───────────── EL UMBRAL ─────────────
+   La única franja oscura de la portada. Es el contraste deliberado con
+   el papel: arriba un organismo que respira, debajo el universo
+   documental. La disolución de abajo la pinta el propio lienzo, y esta
+   máscara remata el encuentro para que no haya ninguna línea de corte
+   entre el umbral y la crema. */
+.umbral {
+    /* Se estira hacia arriba la altura de la barra. En escritorio la
+     portada empieza pegada al borde y ese trozo queda fuera de
+     pantalla —el resultado no cambia—, pero en móvil la portada
+     arranca por debajo de la barra, y sin este tirón la navegación se
+     quedaba flotando sobre crema en vez de dentro del paisaje. */
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    top: calc(-1 * var(--nav-h));
+    /* El alto lo fija el JS a partir de dónde acaba la línea de datos:
+     es exactamente el límite marcado en la referencia. El valor de
+     reserva sólo cubre el instante anterior a la primera medida. */
+    height: var(--alto-umbral, calc(150px + var(--nav-h)));
+    z-index: 1;
+    pointer-events: none;
+    /* Opaco hasta la línea y disuelto en el trecho de más abajo, para
+     que el borde no sea un corte sino una entrega. */
+    -webkit-mask-image: linear-gradient(180deg, #000 0 var(--corte-umbral, 72%), transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0 var(--corte-umbral, 72%), transparent 100%);
+}
+
+/* El suelo del umbral, ahora en CSS. Ya no hay lienzo que lo pinte:
+   sólo queda el cambio de color —oscuro arriba, papel abajo— que es lo
+   que crea el contraste de entrada. La disolución la sigue haciendo la
+   máscara, así que no hay ninguna línea de corte. */
+.umbral {
+    background: linear-gradient(180deg,
+            rgba(13, 11, 10, .97) 0,
+            rgba(17, 14, 12, .94) 52%,
+            rgba(24, 20, 16, .64) 80%,
+            rgba(30, 25, 20, 0) 100%);
+}
+
+/* Los datos de cabecera viven dentro del umbral: en crema, como todo
+   lo que pisa suelo oscuro en este sitio. */
+.cover__meta {
+    position: relative;
+    z-index: 3;
+}
+
+.cover.tiene-umbral .cover__meta,
+.cover.tiene-umbral .cover__meta .meta {
+    color: rgba(246, 235, 207, .62);
+}
+
+.cover.tiene-umbral .cover__meta {
+    border-bottom-color: rgba(246, 235, 207, .16);
+}
+
+/* ───────────── NAV ───────────── */
+.nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 90;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline: var(--gutter);
+    background: color-mix(in srgb, var(--paper) 82%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: transform var(--dur-2) var(--ease-out),
+        background var(--dur-2) var(--ease-out),
+        border-color var(--dur-2) var(--ease-out);
+}
+
+.nav.is-stuck {
+    border-bottom-color: var(--line);
+}
+
+.nav.is-hidden {
+    transform: translateY(-100%);
+}
+
+/* Over a dark band the bar inverts rather than fading out */
+.nav.is-over-dark {
+    background: color-mix(in srgb, #14130F 72%, transparent);
+    border-bottom-color: rgba(246, 235, 207, .14);
+    color: var(--cream);
+}
+
+.nav.is-over-dark .btn--solid {
+    background: var(--cream);
+    color: var(--ink);
+    border-color: var(--cream);
+}
+
+.nav.is-over-dark .nav__burger-b {
+    background: var(--cream);
+}
+
+.nav__brand {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-right: auto;
+}
+
+.nav__brand span {
+    color: var(--coral);
+}
+
+.nav__links {
+    display: flex;
+    gap: clamp(.9rem, 2vw, 2rem);
+}
+
+.nav__links a {
+    font-size: var(--t-sm);
+    font-weight: 500;
+    position: relative;
+    padding-block: .35rem;
+}
+
+.nav__links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform var(--dur-2) var(--ease-out);
+}
+
+.nav__links a:hover::after,
+.nav__links a.is-current::after {
+    transform: scaleX(1);
+}
+
+.nav__end {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.nav__cta {
+    padding: .6rem 1.15rem;
+    font-size: var(--t-xs);
+}
+
+/* While the panel is open the bar must join it, not sit on it as a
+   pale strip. The burger stays on top so it can still close the menu. */
+body.menu-open .nav {
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
+    color: var(--cream);
+    transform: none;
+}
+
+body.menu-open .nav__burger-b {
+    background: var(--cream);
+}
+
+.nav__burger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.nav__burger-b {
+    position: absolute;
+    left: 9px;
+    width: 22px;
+    height: 2px;
+    background: var(--ink);
+    transition: transform var(--dur-1) var(--ease-out), opacity var(--dur-1);
+}
+
+.nav__burger-b:nth-child(2) {
+    top: 17px;
+}
+
+.nav__burger-b:nth-child(3) {
+    top: 23px;
+}
+
+.nav__burger[aria-expanded="true"] .nav__burger-b:nth-child(2) {
+    transform: translateY(3px) rotate(45deg);
+}
+
+.nav__burger[aria-expanded="true"] .nav__burger-b:nth-child(3) {
+    transform: translateY(-3px) rotate(-45deg);
+}
+
+/* ───────────── MOBILE MENU ───────────── */
+.menu {
+    position: fixed;
+    inset: 0;
+    z-index: 85;
+    background: var(--ink);
+    color: var(--cream);
+    padding: calc(var(--nav-h) + var(--s-4)) var(--gutter) var(--s-4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu[hidden] {
+    display: none;
+}
+
+.menu__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu__list a {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2rem, 9vw, 3.4rem);
+    line-height: 1.12;
+    letter-spacing: var(--track-tight);
+    padding-block: .28em;
+    border-bottom: 1px solid rgba(246, 235, 207, .16);
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: menuIn var(--dur-2) var(--ease-out) forwards;
+}
+
+.menu__n {
+    font-family: var(--mono);
+    font-size: var(--t-micro);
+    color: var(--coral);
+    letter-spacing: var(--track-meta);
+}
+
+@keyframes menuIn {
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.menu__foot {
+    color: rgba(246, 235, 207, .5);
+}
+
+/* ───────────── 01 · COVER ───────────── */
+.cover {
+    position: relative;
+    min-height: 100svh;
+    padding: calc(var(--nav-h) + var(--s-3)) 0 var(--s-4);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3vh, 2rem);
+    /* Los ecos de «ágora» viajan con el ratón (hasta 22px el verde), y
+     en los anchos donde la palabra ya llena la caja ese recorrido se
+     salía del viewport y sacaba barra horizontal en toda la página.
+     `clip` en el eje x contiene el recorrido sin mover nada: en reposo
+     no recorta un solo píxel, y a diferencia de `hidden` no obliga al
+     eje vertical a volverse desplazable. */
+    overflow-x: clip;
+}
+
+.cover__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-2);
+    margin-inline: var(--gutter);
+    padding-bottom: .75rem;
+    border-bottom: 1px solid var(--line);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LA PORTADA · el nombre como composición
+   ──────────────────────────────────────────────────────────────
+   «Ágora» atraviesa el borde del panel de video: tinta sobre el
+   papel, crema sobre la imagen. El corte de color cae exactamente
+   donde empieza el panel — si se mueve uno, hay que mover el otro,
+   por eso está en --corte.
+
+   Y se imprime CUATRO VECES, desplazada, como un cartel mal
+   registrado en una imprenta de barrio. La profundidad no sale de
+   una sombra: sale de que la palabra está impresa varias veces y
+   las capas se separan al mover el ratón. Nada de cromo ni bisel:
+   esto es error de registro, no relieve de videojuego.
+   ══════════════════════════════════════════════════════════════ */
+.portada {
+    --corte: 40%;
+    --mx: 0;
+    --my: 0;
+    /* el ratón, de -1 a 1 */
+    position: relative;
+    flex: 1;
+    min-height: min(74vh, 720px);
+}
+
+.portada__video {
+    position: absolute;
+    inset: 0 0 0 var(--corte);
+    overflow: hidden;
+    border-radius: var(--r-media) 0 0 var(--r-media);
+}
+
+.portada__video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.22) saturate(.72) brightness(.94);
+}
+
+.portada__vel {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(100deg, rgba(20, 19, 16, .55) 0%, rgba(20, 19, 16, .12) 34%, rgba(20, 19, 16, 0) 62%),
+        linear-gradient(0deg, rgba(20, 19, 16, .34) 0%, rgba(20, 19, 16, 0) 40%);
+}
+
+.portada__marca {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: clamp(1rem, 4vh, 3rem);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    line-height: .82;
+}
+
+.portada__linea {
+    display: block;
+    padding-inline: var(--gutter);
+}
+
+.portada__centro {
+    font-family: var(--mono);
+    font-size: clamp(.68rem, 1.15vw, .95rem);
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: clamp(.1rem, .4vh, .35rem);
+    transform: translate3d(calc(var(--mx) * 3px), calc(var(--my) * 2px), 0);
+}
+
+/* ---- la firma territorial ----------------------------------
+   Colgada del final de ÁGORA, aproximadamente bajo el «ra». No es un
+   subtítulo: es lo que queda escrito debajo de una firma. El punto
+   donde acaba la palabra se mide y se inyecta en --finAgora, porque
+   depende de la tipografía y del ancho de la pantalla.
+   El interlineado abre un poco cuando el pincel pasa cerca —lo único
+   que hace es respirar; si hiciera más, competiría. */
+.pais {
+    /* Se cuelga de la línea base real de los glifos, no del alto de la
+     caja: con interlineado .82 la palabra se sale de su propia caja y
+     la firma le caía encima. */
+    position: absolute;
+    top: var(--baseAgora, 100%);
+    right: calc(100% - var(--finAgora, 60%));
+    margin-top: clamp(.15rem, .7vh, .5rem);
+    font-family: var(--mono);
+    font-size: clamp(.66rem, 1.05vw, .95rem);
+    letter-spacing: calc(.42em + var(--sep, 0em));
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink-2);
+    transform: translate3d(calc(var(--mx) * 9px), calc(var(--my) * 6px), 0);
+    transition: letter-spacing 520ms var(--ease-out), color 400ms linear;
+    pointer-events: none;
+}
+
+.pais__t {
+    position: relative;
+}
+
+/* El eco desalineado, como el de la palabra grande pero mucho más
+   tenue: la firma pertenece a la misma impresión mal registrada. */
+.pais__eco {
+    position: absolute;
+    inset: 0;
+    color: var(--coral);
+    opacity: .34;
+    transform: translate3d(calc(var(--mx) * -5px), calc(var(--my) * -3px), 0);
+}
+
+/* Sobre el metraje se lee en crema; sobre el papel, en tinta. */
+.pais.is-claro {
+    color: rgba(246, 235, 207, .92);
+    text-shadow: 0 1px 16px rgba(16, 14, 12, .8), 0 0 5px rgba(16, 14, 12, .55);
+}
+
+.pais.is-claro .pais__eco {
+    opacity: .5;
+}
+
+.visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* ---- la palabra, en capas ---------------------------------- */
+.portada__agora {
+    position: relative;
+    display: block;
+}
+
+.ag {
+    display: block;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(4.4rem, 25vw, 24rem);
+    letter-spacing: -.045em;
+    text-transform: lowercase;
+    text-indent: -.055em;
+    padding-inline: var(--gutter);
+    transition: transform 420ms var(--ease-out);
+}
+
+/* Las de atrás: fuera del flujo, en los acentos de las causas, muy
+   bajas de opacidad. Se separan más cuanto más lejos están. */
+.ag--2,
+.ag--3,
+.ag--4 {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.ag--4 {
+    color: var(--green);
+    opacity: .16;
+    transform: translate3d(calc(var(--mx) * -22px), calc(var(--my) * -14px), 0);
+}
+
+.ag--3 {
+    color: var(--blue);
+    opacity: .20;
+    transform: translate3d(calc(var(--mx) * -14px), calc(var(--my) * -9px), 0);
+}
+
+.ag--2 {
+    color: var(--coral);
+    opacity: .26;
+    transform: translate3d(calc(var(--mx) * -7px), calc(var(--my) * -4px), 0);
+}
+
+.ag--1 {
+    position: relative;
+    color: var(--ink);
+    transform: translate3d(calc(var(--mx) * 5px), calc(var(--my) * 3px), 0);
+}
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+    .ag--1 {
+        background-image: linear-gradient(90deg,
+                var(--ink) 0 var(--corte), var(--cream) var(--corte) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+}
+
+/* ---- la frase, al centro ------------------------------------ */
+/* Es la idea. Todo lo demás orbita a su alrededor, así que va en el
+   eje y no arrinconada al pie. */
+/* La declaración, en el mismo idioma que el nombre: impresa varias
+   veces y desplazada. Pero con la mitad de capas y la mitad de
+   recorrido que Ágora — el protagonista no se discute. */
+.portada__frase {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(1rem, 5vh, 4rem);
+    transform: translateX(-50%);
+    z-index: 3;
+    white-space: nowrap;
+}
+
+.fr {
+    display: block;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.9rem, 6.4vw, 5.2rem);
+    line-height: .95;
+    letter-spacing: -.035em;
+    text-transform: lowercase;
+}
+
+.fr i {
+    font-style: normal;
+}
+
+.fr--2,
+.fr--3 {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.fr--3 {
+    color: var(--blue);
+    opacity: .16;
+    transform: translate3d(calc(var(--mx) * -9px), calc(var(--my) * -6px), 0);
+}
+
+.fr--2 {
+    color: var(--coral);
+    opacity: .22;
+    transform: translate3d(calc(var(--mx) * -4px), calc(var(--my) * -3px), 0);
+}
+
+.fr--1 {
+    position: relative;
+    color: var(--ink);
+    transform: translate3d(calc(var(--mx) * 2px), calc(var(--my) * 1.5px), 0);
+}
+
+/* La frase cruza el borde del panel de video igual que ÁGORA, así que
+   se parte igual: tinta sobre papel, crema sobre metraje. La diferencia
+   es que su caja no coincide con la portada, de modo que el punto de
+   corte se calcula y se inyecta —no se puede escribir 40% aquí. */
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+    .fr--1 {
+        background-image: linear-gradient(90deg,
+                var(--ink) 0 var(--fcorte, 100%), var(--cream) var(--fcorte, 100%) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .fr--1 .cover__dot {
+        color: var(--coral);
+        -webkit-text-fill-color: var(--coral);
+    }
+}
+
+/* ---- las preguntas ------------------------------------------ */
+/* Una constelación, no una cuadrícula. Cada una con su sitio, su
+   escala y su profundidad; las de atrás más pequeñas, más pálidas y
+   con menos recorrido. Se apartan un poco cuando el cursor se acerca
+   —no huyen, se mueven como algo suspendido a lo que le pasa el aire
+   por al lado—. */
+/* El lienzo de las preguntas es la portada entera —cabecera, márgenes
+   y pie incluidos—, no sólo la franja del nombre. Si se limita a la
+   caja del video, todas acaban amontonadas encima de él y el papel se
+   queda muerto. */
+.preguntas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Irrumpen. Entran con un desplazamiento lateral corto y se quedan el
+   tiempo suficiente para leerlas enteras; después se van despacio.
+   Nunca están todas a la vez: el espacio lanza una, la retira, lanza
+   otra en otro sitio. Eso es lo que las hace parecer preguntas de
+   alguien y no etiquetas pegadas al fondo. */
+.preg {
+    position: absolute;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 2.15vw, 1.85rem);
+    line-height: 1.26;
+    max-width: 17ch;
+    color: var(--ink-2);
+    opacity: 0;
+    transform: translate3d(calc(var(--dx, 0px) + var(--irr, 0px)), var(--dy, 0px), 0);
+    transition: opacity var(--sale, 900ms) var(--ease-out),
+        transform var(--entra, 620ms) var(--ease-out);
+    will-change: transform, opacity;
+}
+
+.preg.is-on {
+    opacity: var(--op, .86);
+    transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0);
+}
+
+/* La que va sobre el panel de video se lee en crema. */
+/* Sobre el metraje no basta con poner el texto en crema: la imagen
+   tiene zonas claras —una bandera, el cielo— y ahí la frase se
+   desvanece. Una sombra difusa y sin borde hace de penumbra local sin
+   convertirse en una caja. */
+.preg--claro {
+    color: rgba(246, 235, 207, .94);
+    text-shadow: 0 2px 22px rgba(16, 14, 12, .82), 0 0 6px rgba(16, 14, 12, .55);
+}
+
+.cover__foot {
+    margin-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--s-3) var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--line);
+}
+
+.cover__dot {
+    color: var(--coral);
+    font-style: normal;
+}
+
+.cover__ctas {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.cover__count {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+    color: var(--coral-text);
+}
+
+@media (max-width: 860px) {
+
+    /* En vertical el panel no puede partir la palabra por el costado.
+     Se apila: nombre arriba, imagen debajo — y el video deja de estar
+     posicionado en absoluto, porque un alto en porcentaje dentro de un
+     contenedor flexible es justo lo que revienta en pantallas anchas
+     y bajas. Acá el flujo hace el trabajo. */
+    .portada {
+        --corte: 0%;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: clamp(1rem, 3vh, 2rem);
+    }
+
+    .portada__video {
+        position: relative;
+        inset: auto;
+        order: 2;
+        width: 100%;
+        flex: 1 1 auto;
+        min-height: 34vh;
+        border-radius: var(--r-media);
+    }
+
+    .portada__marca {
+        order: 1;
+        flex: 0 0 auto;
+    }
+
+    .portada__agora {
+        font-size: clamp(3.6rem, 27vw, 9rem);
+        background: none;
+        color: var(--ink);
+        -webkit-text-fill-color: currentColor;
+    }
+
+    .portada__pais {
+        text-align: left;
+        color: var(--ink-3);
+    }
+}
+
+/* ───────────── MARQUEE ───────────── */
+.marquee {
+    overflow: hidden;
+    border-block: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--cream);
+    padding-block: .7rem;
+}
+
+.marquee__track {
+    display: flex;
+    gap: 2.5rem;
+    width: max-content;
+    animation: slide 46s linear infinite;
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+}
+
+.marquee__track b {
+    font-weight: 400;
+    color: var(--coral);
+}
+
+@keyframes slide {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+        animation: none;
+    }
+}
+
+/* ───────────── SECTION HEADS ───────────── */
+.band {
+    padding-block: clamp(var(--s-5), 11vh, var(--s-7));
+}
+
+.sec-head {
+    margin-bottom: var(--s-5);
+}
+
+.sec-head__h {
+    font-size: var(--t-xxl);
+    margin-top: .5rem;
+}
+
+.sec-head--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    gap: var(--s-3) clamp(1.5rem, 5vw, 5rem);
+    align-items: end;
+}
+
+.sec-head--split .lede {
+    padding-bottom: .5rem;
+}
+
+.foot-note {
+    margin-top: var(--s-3);
+}
+
+/* ───────────── 02 · PORQUÉ (dark) ───────────── */
+/* ══════════════════════════════════════════════════════════════
+   02 · POR QUÉ EXISTIMOS · el cambio de aire
+   ──────────────────────────────────────────────────────────────
+   Fondo oscuro otra vez, pero no cerrado: la penumbra tiene un
+   agujero blando que sigue al cursor y deja ver el metraje por
+   donde se pasa.
+
+   Eso resuelve un choque físico. El pigmento del pincel es
+   SUSTRACTIVO —tiñe quitándole luz al papel— y sobre un fondo casi
+   negro no hay luz que quitar: sería invisible. En vez de renunciar
+   a la sección oscura o a la interacción, el mismo gesto cambia de
+   consecuencia: acá el trazo no pinta, RECUERDA.
+   ══════════════════════════════════════════════════════════════ */
+.porque {
+    /* clip y no hidden: hidden convertiría esto en contenedor de scroll
+     y el fondo pegajoso dejaría de pegarse. */
+    position: relative;
+    overflow: clip;
+    isolation: isolate;
+    /* Menos aire arriba y abajo: el que sobraba era el que hacía que la
+     sección pareciera no acabarse nunca. */
+    padding-block: clamp(var(--s-4), 6vh, var(--s-5));
+}
+
+/* El cierre de la sección, a todo lo ancho y solo. */
+.porque__cierre {
+    grid-column: 1 / -1;
+    margin: var(--s-3) 0 0;
+    font-size: clamp(1.9rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: .98;
+    letter-spacing: -.035em;
+    color: var(--cream);
+    max-width: 22ch;
+}
+
+.porque__fondo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: clip;
+}
+
+.porque__bg {
+    position: sticky;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    /* Se ve que los carros se mueven. El velo que hay encima es el que
+     protege la lectura, así que el metraje puede ir bastante más
+     expuesto de lo que estaba. */
+    filter: contrast(1.14) saturate(.72) brightness(1.12);
+    opacity: 1;
+}
+
+.porque__scrim {
+    position: sticky;
+    top: 0;
+    display: block;
+    height: 100vh;
+    margin-top: -100vh;
+    --lx: 50%;
+    --ly: 40%;
+    background:
+        radial-gradient(circle 26vmax at var(--lx) var(--ly),
+            rgba(18, 17, 14, .20) 0%, rgba(18, 17, 14, .60) 38%, rgba(18, 17, 14, .86) 74%);
+    transition: background 90ms linear;
+}
+
+.porque__inner {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--s-2);
+}
+
+.porque__inner>.meta {
+    grid-column: 1 / -1;
+}
+
+.porque__h {
+    grid-column: 1 / span 11;
+    font-size: var(--t-xxl);
+    line-height: .96;
+    margin-block: var(--s-1) var(--s-2);
+}
+
+.porque__h em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--yellow);
+}
+
+/* ---- el relato --------------------------------------------
+   El texto es largo y antes bajaba en una sola columna: la sección se
+   estiraba sin fin y el ojo se cansaba antes de llegar. Ahora cruza
+   la página en cinco movimientos que alternan de lado, con la toma de
+   las tres personas encajada entre ellos. El contenido es idéntico;
+   lo que cambia es que el recorrido es horizontal y la altura se
+   reduce casi a la mitad. */
+/* Un solo relato, en una columna. Lo que antes eran cinco bloques
+   repartidos por la rejilla iba dejando huecos enormes —cada fila
+   crecía hasta el más alto de los dos que la ocupaban— y además se
+   leía como dos secciones. En columna no sobra ni un hueco. */
+.relato {
+    grid-column: 1 / -1;
+    max-width: 62ch;
+}
+
+@media (min-width: 900px) {
+    .relato {
+        margin-left: 6%;
+    }
+}
+
+.relato__p {
+    color: var(--ink-2);
+    max-width: 46ch;
+    margin: 0 0 .72em;
+    font-size: var(--t-md);
+    /* Un interlineado algo más cerrado que el del resto del sitio. Es lo
+     que convierte varios textos flotando en un bloque narrativo, y a
+     lo largo de catorce párrafos son doscientos píxeles menos sin
+     tocar el tamaño de la letra. */
+    line-height: 1.42;
+}
+
+.relato__p--suelto {
+    margin-top: var(--s-2);
+    color: var(--cream);
+}
+
+.relato__p b {
+    font-weight: 500;
+    color: var(--cream);
+}
+
+.relato__golpe {
+    margin: .45em 0 .5em;
+    max-width: 18ch;
+    font-size: clamp(1.7rem, 4.4vw, 3.5rem);
+    font-weight: 800;
+    line-height: .98;
+    letter-spacing: -.035em;
+    color: var(--cream);
+}
+
+.relato__golpe em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--yellow);
+}
+
+.relato__golpe--fin {
+    max-width: 20ch;
+}
+
+/* La pregunta que abre la segunda mitad del relato. No es un título de
+   sección —no compite con el de arriba— pero sí marca que aquí empieza
+   otra cosa. */
+.relato__pregunta {
+    font-size: clamp(1.25rem, 2.6vw, 1.95rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -.025em;
+    color: var(--cream);
+    margin: var(--s-4) 0 var(--s-2);
+    max-width: 26ch;
+}
+
+/* Los párrafos que abren idea nueva son los únicos que respiran de
+   más: ahí es donde el relato cambia de asunto. */
+.relato__golpe+.relato__p {
+    margin-top: .1em;
+}
+
+/* Los tres verbos del ágora griega: separados, como tres actos y no
+   como una enumeración. */
+.relato__trio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .1em clamp(1rem, 4vw, 3.5rem);
+    margin: .4em 0 .55em;
+    font-size: clamp(1.35rem, 3.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--cream);
+}
+
+.relato__trio span:nth-child(2) {
+    color: var(--coral);
+}
+
+.relato__trio span:nth-child(3) {
+    color: var(--yellow);
+}
+
+/* La frase que se enciende: el subrayado crece cuando llega, como una
+   conexión que acaba de establecerse. */
+.relato__con {
+    position: relative;
+    color: var(--cream);
+}
+
+.relato__con::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -.16em;
+    height: 2px;
+    background: linear-gradient(90deg, var(--coral), var(--yellow), var(--blue));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.5s var(--ease-out) .4s;
+}
+
+[data-reveal].is-in .relato__con::after {
+    transform: scaleX(1);
+}
+
+.relato__con i {
+    color: var(--coral);
+    font-style: normal;
+}
+
+/* ---- las tres personas -------------------------------------
+   Interrumpe el relato desde dentro: sale del ancho de la columna a
+   ambos lados para que se note que la narración se detiene a mirar,
+   y sigue. */
+.tres {
+    position: relative;
+    margin: var(--s-4) 0;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--r-media);
+    overflow: hidden;
+    box-shadow: 0 3vh 7vh rgba(0, 0, 0, .55);
+}
+
+/* En pantalla ancha el vídeo sale de la columna de lectura y se pone a
+   su lado, no en medio. Antes interrumpía el relato: entraba a x=253
+   con el texto empezando en x=127, así que partía la columna y además
+   metía sus 526 px de alto en la sección. Ahora vive en una segunda
+   columna y se queda pegado mientras el texto pasa por delante: el
+   relato conserva su medida exacta —62ch, los mismos 626 px— y la
+   sección adelgaza justo lo que medía el vídeo. */
+@media (min-width: 1000px) {
+    .relato {
+        display: grid;
+        grid-template-columns: minmax(0, 62ch) minmax(0, 1fr);
+        /* Filas explícitas para que el vídeo pueda cruzarlas todas. Sin
+       ellas, «grid-row: 1 / -1» no tiene a dónde llegar —no hay rejilla
+       explícita— y el vídeo se quedaba dentro de la fila 1, que crecía
+       de 185 a 323 px y abría un hueco de 138 px entre el primer y el
+       segundo párrafo. Las filas que sobran miden cero. */
+        grid-template-rows: repeat(20, min-content);
+        column-gap: clamp(1.6rem, 3vw, 3.2rem);
+        align-items: start;
+        max-width: none;
+    }
+
+    .relato>* {
+        grid-column: 1;
+    }
+
+    .tres {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        align-self: start;
+        margin: 0;
+        position: sticky;
+        top: calc(var(--nav-h, 4.5rem) + 2.5rem);
+    }
+}
+
+.tres video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 46%;
+    transform: scale(1.16);
+    filter: contrast(1.2) saturate(.6) brightness(1.16);
+}
+
+.tres__borde {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(246, 235, 207, .16),
+        inset 0 -8vh 12vh rgba(18, 17, 14, .42);
+}
+
+.porque__pista {
+    grid-column: 1 / -1;
+    margin-top: var(--s-4);
+    color: rgba(246, 235, 207, .42);
+}
+
+/* ───────────── 03 · CAUSAS · editorial index ───────────── */
+/* Replaces the original 2×2 gradient card grid. Each cause is a full
+   width row; on hover/focus its colour floods in from the left and the
+   footage slides into the right margin. */
+.index {
+    border-top: 1px solid var(--line);
+}
+
+.icause {
+    position: relative;
+    display: block;
+    border-bottom: 1px solid var(--line);
+    padding: clamp(1.6rem, 3.4vw, 2.6rem) var(--gutter);
+    overflow: hidden;
+    transition: color var(--dur-2) var(--ease-out);
+}
+
+.icause__flood {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    /* Flood uses the accessible sibling of the accent so cream text on it
+     still clears AA; --c stays bright for dots and rules. */
+    background: var(--cf, var(--c));
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform var(--dur-2) var(--ease-io);
+}
+
+.icause__row {
+    position: relative;
+    z-index: 2;
+    max-width: 1440px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, .82fr) minmax(0, 1.18fr) 2.5rem;
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+    align-items: baseline;
+}
+
+.icause__n {
+    font-family: var(--mono);
+    font-size: var(--t-sm);
+    color: var(--muted);
+    transition: color var(--dur-2) var(--ease-out);
+}
+
+.icause__t {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.6vw, 3rem);
+    line-height: 1.02;
+    letter-spacing: var(--track-tight);
+    transition: transform var(--dur-2) var(--ease-out);
+}
+
+.icause__p {
+    font-size: var(--t-sm);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 54ch;
+    transition: color var(--dur-2);
+}
+
+.icause__go {
+    justify-self: end;
+    align-self: center;
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: transform var(--dur-2) var(--ease-out);
+}
+
+/* Footage bleeds off the right edge rather than sitting inside the text
+   field, so it never competes with the description column. */
+.icause__media {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    right: -3.5rem;
+    width: clamp(120px, 15vw, 230px);
+    aspect-ratio: 3/4;
+    transform: translateY(-50%) rotate(-3deg) scale(.94);
+    border-radius: var(--r-media);
+    overflow: hidden;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path var(--dur-2) var(--ease-io),
+        transform var(--dur-2) var(--ease-out);
+    pointer-events: none;
+}
+
+.icause__media video,
+.icause__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ── Emblemas de causa ─────────────────────────────────────────
+   Papel con algo dibujado encima, no una ventana a un video. Lo que
+   se mueve dentro sólo se mueve mientras alguien está ahí: en reposo
+   la fila entera está quieta. */
+.icause__media {
+    background:
+        radial-gradient(120% 100% at 30% 10%, rgba(255, 255, 255, .55), transparent 60%),
+        var(--cream);
+    box-shadow: 0 1.2rem 3rem rgba(18, 17, 14, .28), inset 0 0 0 1px rgba(18, 17, 14, .10);
+}
+
+/* Duotono: el metraje en gris multiplicado sobre el color de la causa
+   y los negros levantados con un velo de papel. Las cuatro fichas se
+   leen como una misma serie impresa aunque tres traigan imagen y una
+   traiga dibujo. */
+.icause__media--toma {
+    background: none;
+}
+
+.duo {
+    position: absolute;
+    inset: 0;
+    background: var(--cf);
+    overflow: hidden;
+}
+
+.duo video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.12) brightness(1.06);
+    mix-blend-mode: multiply;
+    transform: scale(1.08) translate3d(var(--ex, 0px), var(--ey, 0px), 0);
+    transition: transform 420ms var(--ease-out);
+}
+
+.icause:hover .duo video {
+    transform: scale(1) translate3d(var(--ex, 0px), var(--ey, 0px), 0);
+}
+
+/* Mientras el clip cruza a toda velocidad lo que no interesa, la
+   imagen se apaga y sólo queda el color de la causa. Dura menos de
+   medio segundo y hace que la escena aparezca, en vez de irrumpir a
+   mitad de otra cosa. */
+.is-buscando video {
+    opacity: 0;
+}
+
+.duo video,
+.tres video {
+    transition: opacity 260ms var(--ease-out), transform 420ms var(--ease-out);
+}
+
+.duo__papel {
+    position: absolute;
+    inset: 0;
+    background: var(--cream);
+    mix-blend-mode: screen;
+    opacity: .23;
+}
+
+.emb {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transform: translate3d(var(--ex, 0px), var(--ey, 0px), 0);
+    transition: transform 320ms var(--ease-out);
+}
+
+.emb * {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.emb [class^="emb__"],
+.emb [class^="emb__"]>* {
+    animation-play-state: paused;
+}
+
+.icause:hover .emb [class^="emb__"],
+.icause:hover .emb [class^="emb__"]>*,
+.icause:focus-visible .emb [class^="emb__"],
+.icause:focus-visible .emb [class^="emb__"]>* {
+    animation-play-state: running;
+}
+
+/* 01 · la red que se teje sola */
+.emb__hilos path {
+    animation: tejer 1.6s var(--ease-out) forwards;
+}
+
+@keyframes tejer {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.emb__nodos circle {
+    opacity: 0;
+    animation: brotar .5s var(--ease-out) forwards;
+}
+
+.emb__nodos circle:nth-child(2) {
+    animation-delay: .12s
+}
+
+.emb__nodos circle:nth-child(3) {
+    animation-delay: .24s
+}
+
+.emb__nodos circle:nth-child(4) {
+    animation-delay: .36s
+}
+
+.emb__nodos circle:nth-child(5) {
+    animation-delay: .48s
+}
+
+.emb__nodos circle:nth-child(6) {
+    animation-delay: .60s
+}
+
+@keyframes brotar {
+    from {
+        opacity: 0;
+        transform: scale(.2)
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+/* 02 · una voz que se levanta sobre el coro y se oye */
+.emb__una {
+    transform: scaleY(.28);
+    transform-origin: bottom;
+    animation: alzar 1.1s var(--ease-out) forwards;
+}
+
+@keyframes alzar {
+    to {
+        transform: scaleY(1)
+    }
+}
+
+.emb__ondas circle {
+    opacity: 0;
+    animation: oir 2.4s linear infinite;
+}
+
+.emb__ondas circle:nth-child(2) {
+    animation-delay: .8s
+}
+
+.emb__ondas circle:nth-child(3) {
+    animation-delay: 1.6s
+}
+
+@keyframes oir {
+    0% {
+        opacity: 0;
+        transform: scale(.25)
+    }
+
+    18% {
+        opacity: .75
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.9)
+    }
+}
+
+/* 03 · la gota cae y alguien está mirando el agua */
+.emb__gota {
+    animation: caer 2.4s cubic-bezier(.55, 0, .85, .4) infinite;
+}
+
+@keyframes caer {
+    0% {
+        transform: translateY(-14px) scaleY(.8);
+        opacity: 0
+    }
+
+    12% {
+        opacity: 1
+    }
+
+    46% {
+        transform: translateY(62px) scaleY(1.25);
+        opacity: 1
+    }
+
+    52%,
+    100% {
+        transform: translateY(62px) scaleY(1.25);
+        opacity: 0
+    }
+}
+
+.emb__anillos ellipse {
+    opacity: 0;
+    animation: anillar 2.4s var(--ease-out) infinite;
+}
+
+.emb__anillos ellipse:nth-child(1) {
+    animation-delay: 1.12s
+}
+
+.emb__anillos ellipse:nth-child(2) {
+    animation-delay: 1.32s
+}
+
+.emb__anillos ellipse:nth-child(3) {
+    animation-delay: 1.52s
+}
+
+@keyframes anillar {
+    0% {
+        opacity: .85;
+        transform: scale(.3)
+    }
+
+    40%,
+    100% {
+        opacity: 0;
+        transform: scale(2.4)
+    }
+}
+
+/* 04 · lo que sale de un lado llega al otro */
+.emb__ruta {
+    animation: tejer 1.4s var(--ease-out) forwards;
+}
+
+.emb__polo {
+    animation: latir 2.6s var(--ease-io) infinite;
+}
+
+.emb__polo:nth-child(2) {
+    animation-delay: 1.3s
+}
+
+@keyframes latir {
+
+    0%,
+    100% {
+        transform: scale(.86);
+        opacity: .7
+    }
+
+    50% {
+        transform: scale(1.06);
+        opacity: 1
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .emb [class^="emb__"],
+    .emb [class^="emb__"]>* {
+        animation: none !important;
+    }
+
+    .emb__hilos path {
+        stroke-dashoffset: 0
+    }
+
+    .emb__nodos circle,
+    .emb__ondas circle,
+    .emb__anillos ellipse {
+        opacity: .7
+    }
+
+    .emb__una {
+        transform: none
+    }
+
+    .emb__ruta {
+        stroke-dashoffset: 0
+    }
+}
+
+@media (hover: hover) {
+
+    .icause:hover .icause__flood,
+    .icause:focus-visible .icause__flood {
+        transform: scaleX(1);
+    }
+
+    .icause:hover,
+    .icause:focus-visible {
+        color: var(--cream);
+    }
+
+    .icause:hover .icause__n,
+    .icause:focus-visible .icause__n {
+        color: rgba(246, 235, 207, .95);
+    }
+
+    .icause:hover .icause__p,
+    .icause:focus-visible .icause__p {
+        color: rgba(246, 235, 207, .9);
+    }
+
+    .icause:hover .icause__t,
+    .icause:focus-visible .icause__t {
+        transform: translateX(10px);
+    }
+
+    .icause:hover .icause__go,
+    .icause:focus-visible .icause__go {
+        transform: translateX(8px);
+    }
+
+    .icause:hover .icause__media,
+    .icause:focus-visible .icause__media {
+        clip-path: inset(0 0 0 0);
+        transform: translateY(-50%) rotate(-3deg) scale(1);
+    }
+}
+
+/* Yellow needs ink, not cream, to stay legible */
+.icause[data-ink="dark"]:hover,
+.icause[data-ink="dark"]:focus-visible {
+    color: var(--ink);
+}
+
+.icause[data-ink="dark"]:hover .icause__n,
+.icause[data-ink="dark"]:focus-visible .icause__n {
+    color: rgba(20, 19, 16, .85);
+}
+
+.icause[data-ink="dark"]:hover .icause__p,
+.icause[data-ink="dark"]:focus-visible .icause__p {
+    color: rgba(20, 19, 16, .8);
+}
+
+/* ───────────── 04 · MÉTODO ───────────── */
+.chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .55rem;
+    margin-block: var(--s-4) var(--s-3);
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+}
+
+.chain b {
+    font-weight: 500;
+    padding: .5rem .9rem;
+    border: 1px solid var(--ink);
+    border-radius: var(--r-pill);
+}
+
+.chain i {
+    font-style: normal;
+    color: var(--coral-text);
+}
+
+.metodo__note {
+    max-width: var(--measure);
+    color: var(--ink-2);
+}
+
+.metodo__note em {
+    font-family: var(--serif);
+    font-style: italic;
+}
+
+/* Scroll-scrubbed cycle. The rail gives the section scroll length; the
+   sticky pane holds the ring while the steps advance. */
+.cycle {
+    position: relative;
+    margin-top: var(--s-5);
+}
+
+.cycle__rail {
+    height: 300vh;
+}
+
+.cycle__sticky {
+    position: sticky;
+    top: var(--nav-h);
+    height: calc(100svh - var(--nav-h));
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 5vw, 5rem);
+    padding-inline: var(--gutter);
+    max-width: 1440px;
+    margin-inline: auto;
+}
+
+.cycle__ring {
+    position: relative;
+    width: min(52vh, 440px);
+    aspect-ratio: 1;
+    justify-self: center;
+}
+
+.cycle__ring .rueda {
+    width: 100%;
+    height: 100%;
+    display: block;
+    --p: 0;
+    /* el avance del ciclo, lo pone motion.js */
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LA RUEDA SE ARMA
+   ──────────────────────────────────────────────────────────────
+   No gira una rueda ya hecha: se construye mientras se baja, en el
+   orden en que la arma un carretero — cubo, radios, aro, y la
+   pintura al final. Nadie pinta una rueda que todavía no gira.
+
+   Cada pieza lleva escrito en --t el momento del ciclo en que le
+   toca aparecer. Toda la coreografía sale de UNA variable, --p:
+   no hay 121 animaciones, hay una cuenta.
+   ══════════════════════════════════════════════════════════════ */
+.pz>* {
+    opacity: clamp(0, (var(--p) - var(--t)) * 9, 1);
+}
+
+/* Los radios y el aro no aparecen: se TRAZAN. Un radio que se dibuja
+   desde el cubo hacia afuera es un radio que alguien está clavando. */
+.pz--radios line,
+.pz--aro circle {
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - clamp(0, (var(--p) - var(--t)) * 7, 1));
+}
+
+/* Todo gira menos las palabras: son las estaciones por las que la
+   rueda pasa. Si girasen con ella, a media vuelta estarían cabeza
+   abajo y el ciclo dejaría de leerse. */
+.pz:not(.pz--pasos) {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    transform: rotate(calc(var(--p) * var(--p) * 300deg));
+}
+
+.rueda__paso {
+    opacity: clamp(0, (var(--p) - var(--t)) * 9, 1);
+    transition: fill var(--dur-2) var(--ease-out);
+}
+
+.rueda__paso.is-on {
+    fill: var(--coral-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pz:not(.pz--pasos) {
+        transform: none;
+    }
+}
+
+.cycle__steps {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(.75rem, 2vh, 1.5rem);
+}
+
+.cstep {
+    border-left: 2px solid var(--line);
+    padding-left: clamp(.9rem, 2vw, 1.6rem);
+    opacity: .3;
+    transition: opacity var(--dur-2) var(--ease-out),
+        border-color var(--dur-2) var(--ease-out);
+}
+
+.cstep.is-on {
+    opacity: 1;
+    border-left-color: var(--coral);
+}
+
+.cstep__w {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+    line-height: 1.04;
+    letter-spacing: var(--track-tight);
+}
+
+.cstep__k {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: var(--t-md);
+}
+
+.cstep__t {
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    max-width: 46ch;
+    margin-top: .4rem;
+}
+
+/* Los recursos concretos que financia un Paquete Ágora, dentro del
+   propio paso — no una sección aparte. Mismo tratamiento que el
+   resto del paso: un rótulo .meta y una línea de texto normal, sin
+   mayúsculas forzadas, porque el «Mapa de la Dignidad...» ya es una
+   frase larga y en versalitas se leía como un grito. */
+.cstep__recursos {
+    margin-top: .6rem;
+    max-width: 46ch;
+}
+
+.cstep__recursos-k {
+    margin: 0 0 .25rem;
+}
+
+.cstep__recursos-l {
+    margin: 0;
+    font-size: var(--t-xs);
+    line-height: 1.5;
+    color: var(--ink-3);
+}
+
+/* ───────────── 05 · PROYECTOS · horizontal ───────────── */
+.waves {
+    margin-top: var(--s-4);
+    overflow: hidden;
+}
+
+.waves__track {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    padding-inline: var(--gutter);
+    will-change: transform;
+}
+
+.wave {
+    flex: 0 0 clamp(260px, 32vw, 420px);
+    border: 2px solid var(--ink);
+    border-radius: var(--r-card);
+    background: var(--cream);
+    overflow: hidden;
+    box-shadow: var(--shadow-sticker);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dos tintas, no fotografía cruda.
+   El metraje va en gris sobre el color de la causa, en multiplicar: las
+   sombras se tiñen de esa tinta y las luces suben al papel. Así las tres
+   olas pertenecen a la misma impresión en vez de parecer tres fotos
+   pegadas de tres sitios distintos — que es lo que pasaba antes. */
+.wave__media {
+    position: relative;
+    aspect-ratio: 5/4;
+    overflow: hidden;
+    border-bottom: 2px solid var(--ink);
+    background: var(--c);
+}
+
+.wave__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+    filter: grayscale(1) contrast(1.32) brightness(1.16);
+}
+
+/* Levanta los negros hacia el papel: sin esto el duotono se cierra y
+   la imagen se vuelve una mancha del color de la causa. */
+.wave__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--paper);
+    mix-blend-mode: screen;
+    opacity: .20;
+    pointer-events: none;
+}
+
+.wave__body {
+    padding: clamp(1rem, 2vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    flex: 1;
+}
+
+.wave__name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--t-lg);
+    line-height: 1.05;
+}
+
+.wave__tag {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-2);
+}
+
+.wave__t {
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+}
+
+.wave__bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--c);
+    margin-top: auto;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   06–07 · LA TRANSMISIÓN
+   ──────────────────────────────────────────────────────────────
+   El televisor no está al lado del contenido: ES el contenido de
+   fondo. Entra fuera de escala y recortado, en blanco y negro y
+   casi apagado — una presencia fantasma, no una ilustración.
+
+   Y acá el pincel vuelve a cambiar de oficio: no pinta pigmento,
+   interrumpe la señal. La estática aparece SÓLO por donde pasa el
+   cursor y se desvanece detrás, como una mano metida en la antena.
+   Sin filtro global: si toda la pantalla tuviera ruido, dejaría de
+   ser un gesto de alguien y pasaría a ser un efecto de la página.
+   ══════════════════════════════════════════════════════════════ */
+.transmision {
+    position: relative;
+    isolation: isolate;
+    /* clip y no hidden: hidden convertiría esto en un contenedor de scroll
+     y la televisión pegajosa dejaría de pegarse. */
+    overflow: clip;
+    --senal: 0;
+    background: #100e0c;
+}
+
+/* ── La televisión ─────────────────────────────────────────────
+   Altura cero para no ocupar sitio en el flujo, pegada arriba: el
+   aparato se queda quieto mientras dos secciones enteras le pasan
+   por encima. Eso es lo que lo vuelve fondo y no ilustración. */
+.tele {
+    position: sticky;
+    top: 0;
+    height: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.tele__mueble {
+    position: absolute;
+    top: 50vh;
+    left: 50%;
+    width: min(152vw, 178vh);
+    aspect-ratio: 4 / 3.2;
+    transform: translate(-47%, -50%) scale(calc(1.07 - var(--senal) * .07));
+    transform-origin: 50% 50%;
+    background:
+        radial-gradient(120% 90% at 22% 8%, rgba(246, 235, 207, .055), transparent 58%),
+        linear-gradient(158deg, #3b3431 0%, #221e1c 44%, #100e0c 100%);
+    border-radius: clamp(18px, 3vw, 56px);
+    box-shadow:
+        inset 0 clamp(2px, .35vw, 6px) 0 rgba(246, 235, 207, .055),
+        inset 0 clamp(-6px, -.8vw, -2px) 0 rgba(0, 0, 0, .6),
+        0 6vh 14vh rgba(0, 0, 0, .55);
+    transition: transform 120ms linear;
+}
+
+.tele__pantalla {
+    position: absolute;
+    inset: 4.2% 4.2% 16.5% 4.2%;
+    border-radius: 7% / 9.5%;
+    overflow: hidden;
+    background: #060505;
+}
+
+/* La curvatura del tubo: el vidrio come luz por los bordes. */
+.tele__pantalla::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+        inset 0 0 clamp(34px, 6vw, 130px) rgba(0, 0, 0, .82),
+        inset 0 0 0 clamp(2px, .32vw, 7px) rgba(0, 0, 0, .8);
+}
+
+/* Las barras de ajuste: lo que emite un canal cuando todavía no
+   dice nada. Están debajo del video, así que al avanzar el metraje
+   las va tapando — la señal deja de ser prueba y pasa a ser gente. */
+.tele__barras {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    /* Una carta de ajuste que lleva años emitiéndose: los colores han
+     virado a cálido, el azul se ha ido a verde vintage y los negros se
+     han hundido. No es una paleta apagada por prudencia — es lo que le
+     pasa al fósforo con el tiempo. */
+    background: linear-gradient(90deg,
+            #cbb992 0 14.28%, #e0a92c 14.28% 28.56%, #3f6b63 28.56% 42.84%,
+            #4a7d46 42.84% 57.12%, #b4432a 57.12% 71.4%,
+            #7a4a22 71.4% 85.68%, #1a1512 85.68% 100%);
+    opacity: calc(.86 - var(--senal) * .40);
+    /* Saturadas pero hundidas: el recuerdo de un color intenso, no un
+     pastel. Subir el brillo era lo que las estaba blanqueando. */
+    filter: saturate(1.12) brightness(.66) sepia(.10);
+}
+
+.tele__video {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ampliado y con un punto de desenfoque: el metraje trae rótulos
+     quemados de su propio origen y, a este tamaño, se leían dentro de
+     nuestra composición. Un tubo analógico nunca dio una imagen
+     perfectamente nítida, así que el remedio es también el retrato. */
+    /* Muy ampliado y encuadrado alto: los rótulos quemados que trae el
+     metraje viven en la parte baja del cuadro y así quedan fuera. El
+     desenfoque que hacía ese trabajo antes costaba carísimo —un filtro
+     de desenfoque sobre un vídeo de este tamaño se recalcula en cada
+     imagen y disparaba las esperas a ochenta milisegundos—. Ampliar no
+     cuesta nada y, de paso, la interpolación ya deja la imagen blanda,
+     que es justo lo que hace un tubo. */
+    object-position: center 26%;
+    transform: scale(2.05);
+    filter: sepia(.62) saturate(1.5) hue-rotate(-12deg) contrast(1.24) brightness(1.02);
+    /* El parpadeo del fósforo: una televisión analógica nunca da una luz
+     perfectamente estable. Es lentísimo a propósito —si se notara el
+     ciclo dejaría de ser un defecto y sería un efecto. */
+    opacity: calc((.30 + var(--senal) * .56) * var(--parpadeo, 1));
+}
+
+/* La estática que pinta el pincel. Screen: sólo suma luz, nunca
+   la resta — el ruido de un tubo no oscurece, ilumina el fósforo. */
+.tele__ruido {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+    opacity: .82;
+}
+
+.tele__lineas {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    /* El barrido se desplaza muy despacio: es lo que delata que hay un
+     haz recorriendo el tubo y no una textura pegada. */
+    animation: barrido 9s linear infinite;
+    background: repeating-linear-gradient(180deg,
+            rgba(0, 0, 0, .34) 0 clamp(1px, .12vh, 2px), rgba(0, 0, 0, 0) clamp(1px, .12vh, 2px) clamp(3px, .36vh, 6px));
+    opacity: .8;
+}
+
+.tele__vidrio {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: linear-gradient(122deg, rgba(246, 235, 207, .07) 0 22%, transparent 46%);
+}
+
+/* El baño de la emisión: ámbar en el centro, sombra en los bordes.
+   Es lo que hace que la imagen parezca recordada y no reproducida. */
+.tele__calor {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background:
+        radial-gradient(120% 90% at 50% 42%, rgba(224, 150, 50, .20), transparent 62%),
+        radial-gradient(100% 120% at 50% 100%, rgba(150, 40, 20, .16), transparent 55%);
+    /* 'overlay' profundiza el color; 'soft-light' lo aclaraba y dejaba
+     todo el tubo en pastel. */
+    mix-blend-mode: overlay;
+}
+
+/* Grano fijo, siempre presente: la emulsión y el tubo nunca dieron una
+   superficie limpia. Va en el propio archivo —una turbulencia SVG— para
+   no gastar ni un cuadro de dibujo en algo que no cambia. */
+.tele__grano {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: .26;
+    /* En 'overlay' el grano gris tiraba de todos los colores hacia el
+     centro y los apagaba. En 'soft-light' se limita a texturar. */
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/>\
+<feColorMatrix type='saturate' values='0'/></filter>\
+<rect width='140' height='140' filter='url(%23g)' opacity='.55'/></svg>");
+    background-size: 140px 140px;
+}
+
+/* El frente del mueble: la placa y las dos perillas. */
+.tele__frente {
+    position: absolute;
+    left: 4.2%;
+    right: 4.2%;
+    bottom: 0;
+    height: 16.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4%;
+}
+
+.tele__placa {
+    display: flex;
+    align-items: center;
+    gap: .7em;
+    margin: 0;
+    padding: .55em 1.5em;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(246, 235, 207, .10), rgba(246, 235, 207, .03));
+    box-shadow: inset 0 1px 0 rgba(246, 235, 207, .20), inset 0 -1px 0 rgba(0, 0, 0, .5);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(.6rem, 1.15vw, 1.5rem);
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(246, 235, 207, .66);
+}
+
+.tele__placa i {
+    font-style: normal;
+    color: var(--coral);
+    opacity: .8;
+}
+
+.tele__perilla {
+    width: clamp(22px, 3.4vw, 96px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+        conic-gradient(from 210deg, rgba(0, 0, 0, .5), rgba(246, 235, 207, .20) 35%, rgba(0, 0, 0, .55) 70%, rgba(246, 235, 207, .13)),
+        #2a2624;
+    box-shadow: inset 0 2px 4px rgba(246, 235, 207, .10), inset 0 -3px 6px rgba(0, 0, 0, .7), 0 3px 8px rgba(0, 0, 0, .5);
+    position: relative;
+}
+
+.tele__perilla::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 14%;
+    width: 8%;
+    height: 34%;
+    border-radius: 999px;
+    background: rgba(246, 235, 207, .42);
+    transform: translateX(-50%) rotate(-24deg);
+}
+
+/* Un velo general, ligero: sólo asienta el tubo en la penumbra de la
+   sección. Lo que de verdad protege la lectura no va aquí. */
+.tele::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(50% - 50vw);
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+    background:
+        linear-gradient(90deg, rgba(16, 14, 12, .40) 0 30%, rgba(16, 14, 12, .28) 60%, rgba(16, 14, 12, .14) 100%),
+        radial-gradient(88% 66% at 60% 50%, transparent 26%, rgba(16, 14, 12, .50) 100%);
+}
+
+.transmision>.band {
+    position: relative;
+    z-index: 4;
+    /* Las bandas oscuras traen su propio suelo opaco —lo necesitan cuando
+     van solas—, pero aquí el suelo ya lo pone la televisión. Sin esto
+     el aparato queda tapado por completo y sólo se ve en los huecos. */
+    background: transparent;
+}
+
+/* La penumbra se ciñe al contenido, no a la sección entera. Así el
+   relleno vertical de cada banda deja ver el tubo por arriba y por
+   abajo, y el aparato deja de ser un telón detrás del texto para
+   pasar a ser el espacio en el que el texto está metido. */
+.transmision .band__inner {
+    position: relative;
+}
+
+/* El texto ocupa un carril y le deja el resto del ancho al aparato.
+   Sin esto las citas se estiran hasta el borde y no queda sitio donde
+   se vea el tubo: la televisión pasaría a estar sólo detrás, que es
+   justo lo que no queremos. */
+@media (min-width: 900px) {
+
+    /* Caravanas tenía el carril tan angosto (60%) que el texto se leía
+     apilado en una columna y quedaba una franja de penumbra —ni texto
+     ni tubo con color— entre el final del párrafo y donde el aparato
+     ya se veía nítido. Se abre a un carril más ancho (72%) y el texto
+     pasa a dos columnas editoriales (ver .caravanas__cols) para que
+     ocupe ese ancho horizontalmente en vez de estirarse hacia abajo.
+     El tubo sigue ahí, sin tocar: solo se corre la cortina un poco. */
+    .transmision .band__inner {
+        padding-right: 28%;
+    }
+
+    /* En la Revolución el carril se abre: aquí no compite un aparato con
+     un texto corto, hay dos citas largas. Estrechadas al 60 % caían a
+     plomo durante tres pantallas. El tubo sigue viéndose en Caravanas
+     y por encima y por debajo del texto. */
+    .transmision #consciencias .band__inner {
+        padding-right: 6%;
+    }
+
+    /* En la Revolución el velo general afloja para que se vea el tubo —
+     es el fondo de la sección, no un adorno tapado—. La lectura la
+     protege una penumbra local detrás de cada cita, no un telón que
+     cubra la pantalla entera. */
+    .transmision #consciencias .band__inner::before {
+        background: rgba(16, 14, 12, .30);
+    }
+
+    .transmision .sec-head--split {
+        grid-template-columns: 1fr;
+    }
+
+    .transmision .voice__q,
+    .transmision .voice__a {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+.transmision .band__inner::before {
+    content: '';
+    position: absolute;
+    inset: -7vh -8vw;
+    z-index: -1;
+    pointer-events: none;
+    /* La penumbra no cede antes de que acabe la última línea: el punto
+     donde empieza a levantarse va después del carril de texto, no
+     encima de él. */
+    background: linear-gradient(90deg,
+            rgba(16, 14, 12, .90) 0 56%, rgba(16, 14, 12, .66) 68%, rgba(16, 14, 12, 0) 82%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 7vh, #000 calc(100% - 7vh), transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 7vh, #000 calc(100% - 7vh), transparent 100%);
+}
+
+/* En pantalla angosta el texto ocupa todo el ancho, así que la sombra
+   también: aquí el tubo no se ve al lado de la palabra, se ve por
+   encima y por debajo de ella. */
+@media (max-width: 900px) {
+    .transmision .band__inner::before {
+        inset: -6vh -8vw;
+        background: rgba(16, 14, 12, .90);
+        -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 6vh, #000 calc(100% - 6vh), transparent 100%);
+        mask-image: linear-gradient(180deg, transparent 0, #000 6vh, #000 calc(100% - 6vh), transparent 100%);
+    }
+}
+
+/* En pantalla angosta el texto ocupa todo el ancho, así que el
+   respaldo también: aquí la televisión no se ve al lado de la palabra,
+   se ve entre una y otra. La alternancia sigue siendo vertical. */
+@media (max-width: 900px) {
+    .transmision>.band::before {
+        background: rgba(16, 14, 12, .90);
+    }
+}
+
+.caravanas__inner {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--s-3);
+}
+
+.caravanas__h {
+    grid-column: 1 / span 8;
+    font-size: var(--t-xl);
+    margin-block: var(--s-2) var(--s-3);
+}
+
+.caravanas__cols {
+    grid-column: 1 / span 7;
+}
+
+.caravanas__cols p+p {
+    margin-top: 1.1em;
+}
+
+.caravanas__pista {
+    grid-column: 1 / -1;
+    margin-top: var(--s-4);
+    color: rgba(246, 235, 207, .40);
+}
+
+/* Composición horizontal: el bloque de texto se ensancha y las
+   cinco líneas pasan a fluir en dos columnas editoriales en vez de
+   apilarse en una sola tira angosta. El enlace final ("Sumá tu
+   talento") no se corta a la mitad entre columnas. */
+@media (min-width: 900px) {
+    .caravanas__h {
+        grid-column: 1 / span 9;
+    }
+
+    .caravanas__cols {
+        grid-column: 1 / span 9;
+        column-count: 2;
+        column-gap: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .caravanas__cols p {
+        break-inside: avoid;
+    }
+
+    .caravanas__cols p+p {
+        margin-top: 0;
+        padding-top: 1.1em;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .caravanas__h,
+    .caravanas__cols {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tele__ruido {
+        display: none;
+    }
+
+    .tele__mueble {
+        transition: none;
+    }
+}
+
+/* ───────────── 07 · CONSCIENCIAS ───────────── */
+/* ---- las dos voces, en horizontal --------------------------
+   El texto es largo. En una sola medida caía a plomo durante tres
+   pantallas; en columnas ocupa la mitad y se lee como una página
+   impresa: el ojo baja poco y vuelve a subir. */
+.voces {
+    margin-top: var(--s-5);
+}
+
+.voz {
+    position: relative;
+    margin: 0;
+    padding: var(--s-4) 0;
+    border-top: 1px solid var(--line);
+}
+
+/* La penumbra que hace legible la cita, del tamaño de la cita y con
+   los bordes disueltos: entre una y otra, y por encima del título, el
+   tubo se ve entero. */
+.voz::before {
+    content: '';
+    position: absolute;
+    inset: -2vh -4vw;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(16, 14, 12, .84);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+
+.voz>* {
+    position: relative;
+    z-index: 1;
+}
+
+.voz__texto {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.02rem, 1.5vw, 1.28rem);
+    line-height: 1.5;
+    color: var(--ink-2);
+    text-wrap: pretty;
+}
+
+@media (min-width: 900px) {
+    .voz__texto {
+        columns: 2;
+        column-gap: clamp(1.8rem, 4vw, 3.6rem);
+    }
+}
+
+@media (min-width: 1200px) {
+
+    /* La primera es mucho más larga que la segunda: con tres columnas
+     las dos acaban ocupando un alto parecido y la sección deja de
+     tener un bloque gigante y otro pequeño. */
+    .voz--1 .voz__texto {
+        columns: 3;
+    }
+}
+
+/* Sin 'avoid-column': estos párrafos son de doscientas palabras y, si
+   se les prohíbe partirse, cada uno se queda con una columna entera y
+   las demás vacías — la cita ocupaba el doble de alto del necesario.
+   Aquí el texto tiene que fluir de una columna a la siguiente. */
+.voz__texto p {
+    margin: 0 0 .9em;
+}
+
+.voz__texto p:last-child {
+    margin-bottom: 0;
+}
+
+/* El golpe cruza las dos columnas: si se quedara dentro de una se
+   perdería en mitad del párrafo, y es la frase del sitio entero. */
+.voz__golpe {
+    column-span: all;
+    font-family: var(--display);
+    font-style: normal;
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3.6vw, 2.8rem);
+    line-height: 1;
+    letter-spacing: -.03em;
+    color: var(--cream);
+    margin: .45em 0 .7em;
+}
+
+.voz__firma {
+    margin-top: var(--s-3);
+    color: var(--muted);
+    font-style: normal;
+    letter-spacing: var(--track-meta);
+}
+
+
+/* ───────────── 08/09 · LEDGER (agenda + lupa) ───────────── */
+.ledger {
+    border-top: 1px solid var(--ink);
+}
+
+.lrow {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, .9fr) auto;
+    gap: clamp(.75rem, 2.4vw, 2rem);
+    align-items: baseline;
+    padding-block: clamp(1.1rem, 2.6vw, 1.9rem);
+    border-bottom: 1px solid var(--line);
+    transition: background var(--dur-2) var(--ease-out);
+}
+
+.lrow:hover {
+    background: var(--paper-2);
+}
+
+.lrow__k {
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: .06em;
+}
+
+.lrow__t {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--t-lg);
+    line-height: 1.06;
+}
+
+.lrow__s {
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+}
+
+.lrow__x {
+    font-family: var(--mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.lrow__dot {
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    border-radius: 50%;
+    background: var(--c);
+    margin-right: .5rem;
+    vertical-align: middle;
+}
+
+.ledger--lupa .lrow {
+    grid-template-columns: 4rem minmax(0, .8fr) minmax(0, 1.4fr) auto;
+}
+
+/* ───────────── 10 · IMPACTO · tally sheet ───────────── */
+.tally {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--s-3);
+}
+
+.tally tr {
+    border-bottom: 1px solid var(--line);
+}
+
+.tally tr:first-child {
+    border-top: 1px solid var(--ink);
+}
+
+.tally th,
+.tally td {
+    text-align: left;
+    padding-block: clamp(.7rem, 1.8vw, 1.15rem);
+    font-weight: 400;
+}
+
+.tally__label {
+    font-size: var(--t-md);
+}
+
+.tally__val {
+    width: 26%;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: var(--t-sm);
+    color: var(--muted);
+}
+
+/* The blank is drawn, not implied — a field waiting for its number */
+.tally__blank {
+    display: inline-block;
+    width: 4.5rem;
+    height: 1px;
+    background: var(--ink-3);
+    vertical-align: middle;
+    margin-right: .6rem;
+}
+
+.impacto__note {
+    margin-top: var(--s-4);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-3);
+    align-items: center;
+    border-left: 2px solid var(--coral);
+    padding-left: var(--s-3);
+}
+
+.impacto__note p {
+    max-width: 62ch;
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+}
+
+/* ───────────── 11 · DUAL ───────────── */
+.dual__inner {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 6vw, 6rem);
+}
+
+.dual__h {
+    font-size: var(--t-xl);
+    margin-block: .4rem var(--s-2);
+}
+
+.dual__b {
+    border-left: 1px solid var(--line);
+    padding-left: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+/* «No lo haremos solos» cierra Sumate como un bloque aparte, ya no
+   como su propia sección — centrado para que se lea como un cierre,
+   no como una columna más pegada a la izquierda. */
+.sumate__aliados {
+    text-align: center;
+    max-width: 46rem;
+    margin-inline: auto;
+    margin-top: var(--s-5);
+}
+
+.sumate__aliados .prose {
+    margin-inline: auto;
+}
+
+.sumate__aliados .allies {
+    justify-content: center;
+}
+
+.allies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-block: var(--s-3);
+}
+
+.allies li {
+    font-family: var(--mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: .5rem .9rem;
+}
+
+/* ───────────── 12 · SUMATE (dark) ───────────── */
+.sumate {
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.sumate__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+.sumate__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(20, 19, 15, .88);
+}
+
+.sumate__h {
+    font-size: var(--t-xxl);
+    margin-block: var(--s-2) var(--s-3);
+}
+
+.sumate__h em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--yellow);
+}
+
+.paths {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 3vw, 2.5rem);
+    margin-block: var(--s-5) var(--s-4);
+    border-top: 1px solid var(--line);
+}
+
+.path {
+    padding-top: var(--s-3);
+}
+
+.path__k {
+    font-family: var(--mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--yellow);
+}
+
+.path__t {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--t-lg);
+    margin-block: .4rem .6rem;
+}
+
+.path__x {
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    margin-bottom: var(--s-2);
+}
+
+/* Una segunda invitación dentro del mismo bloque — Casa Ágora dentro
+   de Presencia, Involucramiento dentro de Respaldo — no un cuarto
+   camino. Una línea fina la separa del primer párrafo, más chica y
+   sin repetir el mismo peso visual que el título principal. */
+.path__extra {
+    margin-top: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--line);
+}
+
+.path__extra-t {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: var(--t-md);
+    margin: 0 0 .4rem;
+}
+
+.path__extra-x {
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    margin-bottom: var(--s-2);
+}
+
+/* «Avisame» es la acción de esta sección, y antes no lo parecía: el
+   campo y el botón pesaban lo mismo y el conjunto se leía como el pie
+   del formulario. La jerarquía se corrige con tamaño y aire, sin color
+   nuevo ni un botón distinto al del resto del sitio: el campo da un
+   paso atrás (borde más tenue) y el botón da dos hacia adelante. */
+.signup {
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-4);
+    max-width: 46rem;
+}
+
+.signup label {
+    display: block;
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    margin-bottom: 1.1rem;
+}
+
+.signup__row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.signup input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    background: transparent;
+    color: inherit;
+    border: 1px solid rgba(246, 235, 207, .26);
+    border-radius: var(--r-pill);
+    padding: 1.1rem 1.5rem;
+    font: inherit;
+    font-size: var(--t-sm);
+}
+
+.signup input::placeholder {
+    color: var(--muted);
+}
+
+.signup input:focus-visible {
+    border-color: var(--yellow);
+}
+
+/* Inside .band--dark, --ink is remapped to cream. A cream-filled button
+   must therefore name its dark foreground literally, or it renders
+   cream-on-cream. */
+.signup .btn--solid {
+    background: var(--cream);
+    color: #14130F;
+    border-color: var(--cream);
+    flex: 0 0 auto;
+    font-size: var(--t-md);
+    padding: 1.05rem 2.6rem;
+    min-width: 12rem;
+    justify-content: center;
+    /* Un halo del mismo crema, muy bajo, para que el botón se despegue
+     del fondo sin recurrir a un color que no es del sistema. */
+    box-shadow: 0 0 0 .55rem rgba(246, 235, 207, .09);
+}
+
+.signup .btn--solid:hover {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: #14130F;
+}
+
+.signup .btn--solid:hover {
+    box-shadow: 0 0 0 .55rem rgba(255, 194, 46, .16);
+}
+
+.signup .btn--solid:focus-visible {
+    box-shadow: 0 0 0 .55rem rgba(255, 194, 46, .3);
+}
+
+/* En pantalla angosta el botón deja de ser un apéndice del campo y
+   pasa a ocupar su propia línea completa: es lo primero que se toca. */
+@media (max-width: 640px) {
+    .signup__row {
+        flex-direction: column;
+    }
+
+    /* Al apilar, el eje principal pasa a ser el vertical: el `flex-basis`
+     de 16rem del campo dejaría de ser un ancho mínimo y se convertiría
+     en 16rem de alto. Se anula. */
+    .signup input {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .signup .btn--solid {
+        width: 100%;
+        min-width: 0;
+        padding-inline: 1.5rem;
+    }
+}
+
+.signup__msg {
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    margin-top: 1.1rem;
+    min-height: 1.2em;
+    color: var(--yellow);
+}
+
+/* ───────────── FOOTER ───────────── */
+.foot {
+    background: var(--ink);
+    color: var(--cream);
+    padding: var(--s-5) var(--gutter) var(--s-4);
+}
+
+.foot__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: var(--s-4);
+    align-items: end;
+}
+
+.foot__mark {
+    font-size: clamp(3rem, 12vw, 9rem);
+    line-height: .8;
+    letter-spacing: -0.045em;
+}
+
+.foot__mark span {
+    color: var(--coral);
+}
+
+.foot__meta .meta {
+    color: rgba(246, 235, 207, .55);
+    display: block;
+}
+
+.foot__nav {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    text-align: right;
+    font-size: var(--t-sm);
+}
+
+.foot__nav a:hover {
+    color: var(--coral);
+}
+
+/* ───────────── CAUSE DETAIL ───────────── */
+.detail {
+    background: var(--paper);
+}
+
+.detail[hidden] {
+    display: none;
+}
+
+.dhero {
+    min-height: 72svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: calc(var(--nav-h) + var(--s-5)) var(--gutter) var(--s-5);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--cream);
+}
+
+.dhero video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+.dhero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.dhero__n {
+    font-family: var(--mono);
+    font-size: var(--t-sm);
+    letter-spacing: var(--track-meta);
+}
+
+.dhero__cat {
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+}
+
+.dhero__t {
+    font-size: var(--t-xxl);
+    margin-top: var(--s-2);
+    max-width: 20ch;
+}
+
+.dhero__p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--t-lg);
+    margin-top: var(--s-2);
+    max-width: 34ch;
+}
+
+.dsec {
+    padding: clamp(var(--s-5), 9vh, var(--s-6)) var(--gutter);
+}
+
+.dsec__inner {
+    max-width: 1440px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--s-3) clamp(1rem, 3vw, 3rem);
+}
+
+.dsec .meta,
+.dbisagra .meta,
+.ddim__head .meta {
+    grid-column: 1 / -1;
+}
+
+.dsec__h {
+    grid-column: 1 / span 5;
+    font-size: var(--t-xl);
+}
+
+.dsec__b {
+    grid-column: 7 / span 6;
+}
+
+.dsec__b p+p {
+    margin-top: 1em;
+}
+
+/* Un proyecto que todavía no arrancó: el nombre pesa, y debajo el
+   estado dice en qué punto está antes de que nadie lea el párrafo. */
+.dproy__n {
+    font-size: var(--t-lg);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.dproy__e {
+    margin-top: .5rem;
+    color: var(--ink-3);
+}
+
+.dsec__b .dproy__e+p {
+    margin-top: 1.2em;
+}
+
+.dsec--alt {
+    background: var(--paper-2);
+}
+
+.dquote {
+    padding: clamp(var(--s-5), 10vh, var(--s-7)) var(--gutter);
+    background: var(--ink);
+    color: var(--cream);
+}
+
+.dquote blockquote {
+    max-width: 22ch;
+    margin-inline: auto;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--t-xl);
+    line-height: 1.24;
+}
+
+.dquote cite {
+    display: block;
+    margin-top: var(--s-3);
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: rgba(246, 235, 207, .55);
+}
+
+.dlist {
+    grid-column: 7 / span 6;
+}
+
+.dlist li {
+    padding-block: .8rem;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: .8rem;
+}
+
+.dlist li::before {
+    content: "—";
+    color: var(--c, var(--coral));
+}
+
+.dflow {
+    grid-column: 1 / -1;
+    counter-reset: f;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+}
+
+.dflow li {
+    counter-increment: f;
+    border-top: 2px solid var(--ink);
+    padding-top: .8rem;
+    font-size: var(--t-sm);
+}
+
+.dflow li::before {
+    content: counter(f, decimal-leading-zero);
+    display: block;
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    color: var(--c, var(--coral));
+    margin-bottom: .35rem;
+}
+
+/* ── el paquete que sostiene la causa ──
+   `.dcadena` no tenía ninguna regla: los enlaces se apilaban como
+   texto corrido y «Cómo se financia» se leía como una columna sin
+   fin. Pasa a ser una fila de fichas que ocupa el ancho libre a la
+   derecha del titular, la misma disposición que usa cualquier otra
+   sección de esta página. La ficha se arma con el lenguaje que ya
+   existe aquí: filete del color de la causa arriba (como `.dflow`),
+   papel un paso más oscuro (como `.dsec--alt`) y las etiquetas en la
+   mono de los rótulos. Ningún color ni tipografía nuevos. */
+.dcadena {
+    grid-column: 6 / -1;
+    display: grid;
+    align-items: stretch;
+    gap: clamp(1rem, 2vw, 1.6rem);
+    /* Mínimo bajo para que quepan siempre dos fichas de frente en el
+     ancho que deja el titular, y `1fr` para que se repartan lo que
+     haya. `auto-fit` colapsa la pista sobrante cuando la causa tiene
+     un solo paquete, y ahí el tope de la ficha evita que se estire a
+     lo ancho de media pantalla. `min(100%, …)` es lo que impide que
+     la ficha desborde en móvil. */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.dcadena__p {
+    display: flex;
+    flex-direction: column;
+    max-width: 26rem;
+    background: var(--paper-2);
+    border-top: 2px solid var(--c, var(--ink));
+    padding: clamp(1.3rem, 2.2vw, 1.8rem) clamp(1.1rem, 1.8vw, 1.5rem);
+    color: inherit;
+    text-decoration: none;
+    transition: background var(--dur-1) var(--ease-out);
+}
+
+.dcadena__p:hover,
+.dcadena__p:focus-visible {
+    background: var(--paper);
+    outline: none;
+}
+
+.dcadena__p:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.dcadena__n {
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    color: var(--ink-3);
+}
+
+.dcadena__t {
+    font-size: var(--t-md);
+    line-height: 1.12;
+    margin: .35rem 0 1.1rem;
+}
+
+/* «Recibe» y «Financia» dejan de ser una negrita metida en medio del
+   párrafo y pasan a ser el rótulo de su propio campo. */
+.dcadena__paso {
+    display: block;
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    color: var(--ink-2);
+}
+
+.dcadena__paso b {
+    display: block;
+    margin-bottom: .3rem;
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.dcadena__paso i {
+    font-style: normal;
+}
+
+.dcadena__paso+.dcadena__paso {
+    margin-top: .9rem;
+    padding-top: .9rem;
+    border-top: 1px solid var(--line);
+}
+
+/* El enlace se ancla abajo para que las fichas de una misma fila
+   terminen a la misma altura aunque los textos midan distinto. */
+.dcadena__x {
+    margin-top: auto;
+    padding-top: 1.4rem;
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--ink-3);
+    transition: color var(--dur-1) var(--ease-out);
+}
+
+.dcadena__p:hover .dcadena__x,
+.dcadena__p:focus-visible .dcadena__x {
+    color: var(--ink);
+}
+
+.dcadena__p .arw {
+    display: inline-block;
+    transition: transform var(--dur-1) var(--ease-out);
+}
+
+.dcadena__p:hover .arw {
+    transform: translateX(.25rem);
+}
+
+.dstats {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--ink);
+    margin-top: var(--s-3);
+}
+
+.dback {
+    position: fixed;
+    left: var(--gutter);
+    bottom: var(--s-3);
+    z-index: 95;
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+}
+
+.dback:hover {
+    background: var(--coral);
+    border-color: var(--coral);
+}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+
+@media (max-width: 1080px) {
+    .dsec__h {
+        grid-column: 1 / -1;
+    }
+
+    .dsec__b,
+    .dlist {
+        grid-column: 1 / -1;
+    }
+
+    /* El titular deja de compartir fila, así que las fichas pasan a
+     ocupar el ancho entero y siguen cabiendo dos en tablet. */
+    .dcadena {
+        grid-column: 1 / -1;
+    }
+
+    .voice__q,
+    .voice__a {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav__links {
+        display: none;
+    }
+
+    .nav__burger {
+        display: block;
+    }
+
+    .nav__cta {
+        display: none;
+    }
+
+    .cover {
+        gap: var(--s-3);
+    }
+
+    .cover__foot {
+        grid-template-columns: 1fr;
+    }
+
+    .cover__seq,
+    .cover__ctas {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .cover__count {
+        grid-row: auto;
+    }
+
+    .cover__meta-mid {
+        display: none;
+    }
+
+    .sec-head--split {
+        grid-template-columns: 1fr;
+    }
+
+    /* The cycle stops being scroll-scrubbed and becomes a plain list */
+    .cycle__rail {
+        display: none;
+    }
+
+    .cycle__sticky {
+        position: static;
+        height: auto;
+        grid-template-columns: 1fr;
+        padding-inline: 0;
+    }
+
+    .cstep {
+        opacity: 1;
+        border-left-color: var(--coral);
+    }
+
+    .dual__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .dual__b {
+        border-left: 0;
+        padding-left: 0;
+        border-top: 1px solid var(--line);
+        padding-top: var(--s-4);
+    }
+
+    .paths {
+        grid-template-columns: 1fr;
+    }
+
+    .path {
+        border-top: 1px solid var(--line-soft);
+    }
+
+    .path:first-child {
+        border-top: 0;
+    }
+
+    .impacto__note {
+        grid-template-columns: 1fr;
+    }
+
+    .foot__inner {
+        grid-template-columns: 1fr;
+        gap: var(--s-3);
+    }
+
+    .foot__nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: .75rem 1.25rem;
+        text-align: left;
+    }
+}
+
+@media (max-width: 720px) {
+    .icause__row {
+        grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+        align-items: start;
+    }
+
+    .icause__p {
+        grid-column: 2;
+        margin-top: .55rem;
+        max-width: none;
+    }
+
+    .icause__media {
+        display: none;
+    }
+
+    .lrow {
+        grid-template-columns: 1fr;
+        gap: .3rem;
+    }
+
+    .ledger--lupa .lrow {
+        grid-template-columns: 1fr;
+    }
+
+    .lrow__x {
+        white-space: normal;
+    }
+
+    .tally__val {
+        width: auto;
+    }
+
+    .waves__track {
+        transform: none !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .wave {
+        scroll-snap-align: start;
+    }
+
+    .cover__meta {
+        flex-direction: column;
+        gap: .2rem;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EL CAMPO · el pigmento y la red
+   ──────────────────────────────────────────────────────────────
+   The page keeps its paper. That is the decision this layer is
+   built on: a watercolour needs a sheet, and Ágora's identity is
+   ink on paper, not light in a void. The canvas therefore sits
+   BEHIND every section, and every section is transparent, so the
+   pigment stains the page itself rather than floating over it.
+
+   Nothing here is a colour of its own: the field is tinted with
+   --paper by the shader, so if the palette changes, the water
+   changes with it.
+   ══════════════════════════════════════════════════════════════ */
+
+.campo {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* never a control: if it dies, nothing breaks */
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+}
+
+.campo.is-live {
+    opacity: 1;
+}
+
+.campo canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* The script already refuses to start under these conditions. This is the
+   second lock: if the layer ever exists, it still must not paint. */
+@media (prefers-reduced-motion: reduce) {
+    .campo {
+        display: none;
+    }
+}
+
+@media print {
+    .campo {
+        display: none;
+    }
+}
+
+/* Content rides above the water. The palette is untouched — the
+   editorial site is exactly the site that was already working. */
+body.has-campo main,
+body.has-campo .foot,
+body.has-campo .detail {
+    position: relative;
+    z-index: 2;
+}
+
+/* La barra queda fuera de esa regla a propósito. Estaba incluida y le
+   pisaba el 'position: fixed' con un 'relative': dejaba de ser una
+   barra fija y se iba con el scroll para no volver — de ahí que el
+   menú «no se viera». Sólo necesita quedar por encima del pincel, y
+   para eso basta con su propio z-index. */
+body.has-campo .nav {
+    position: fixed;
+    z-index: 90;
+}
+
+/* The bar has to stay legible over a wash that can pass beneath it. */
+body.has-campo .nav {
+    background: color-mix(in srgb, var(--paper) 82%, transparent);
+}
+
+/* Esta regla lleva más peso que la de la barra invertida, así que sobre
+   suelo oscuro dejaba el fondo en crema con la letra también en crema:
+   la navegación desaparecía. Con el umbral en la portada se veía a la
+   primera, pero el fallo ya estaba en cada banda oscura del sitio. */
+body.has-campo .nav.is-over-dark {
+    background: color-mix(in srgb, #14130F 74%, transparent);
+}
+
+/* The cause page is paper too; only its own surfaces are stated. */
+body.has-campo .detail {
+    background: transparent;
+}
+
+/* ---- El control de sonido ---------------------------------- */
+/* Two words and a rule, set in the meta face. It belongs to the
+   masthead the way a caption belongs to a photograph. */
+/* The masthead now holds two things at its left edge. */
+.nav__start {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+    min-width: 0;
+}
+
+.nav__start .nav__brand {
+    margin-right: 0;
+}
+
+.sonido {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin-left: clamp(.75rem, 2vw, 1.75rem);
+    padding: .25rem 0;
+    font-family: var(--mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color var(--dur-1) var(--ease-out);
+}
+
+.sonido:hover {
+    color: var(--ink);
+}
+
+/* display: inline-flex outranks the UA rule for [hidden]. Without this
+   the control shows even when there is no piece to play. */
+.sonido[hidden] {
+    display: none;
+}
+
+.sonido__rule {
+    width: 26px;
+    height: 1px;
+    background: currentColor;
+    opacity: .45;
+    transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-2) var(--ease-out);
+    transform-origin: left center;
+}
+
+.sonido.is-on {
+    color: var(--ink);
+}
+
+.sonido.is-on .sonido__rule {
+    opacity: 1;
+    animation: sonidoPulso 2.6s var(--ease-io) infinite;
+}
+
+.sonido__s {
+    font-weight: 500;
+}
+
+@keyframes sonidoPulso {
+
+    0%,
+    100% {
+        transform: scaleX(1);
+    }
+
+    50% {
+        transform: scaleX(.45);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sonido.is-on .sonido__rule {
+        animation: none;
+    }
+}
+
+/* Fourth time this trap appears: a rule that names --ink or --muted
+   breaks the moment the bar inverts over a dark band. State it. */
+.nav.is-over-dark .sonido {
+    color: rgba(246, 235, 207, .62);
+}
+
+.nav.is-over-dark .sonido:hover,
+.nav.is-over-dark .sonido.is-on {
+    color: var(--cream);
+}
+
+@media (max-width: 720px) {
+    .sonido__t {
+        display: none;
+    }
+
+    /* the rule and ON/OFF are enough */
+    .sonido {
+        margin-left: .75rem;
+    }
+}
+
+
+
+
+@keyframes barrido {
+    to {
+        background-position-y: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tele__lineas {
+        animation: none
+    }
+}
+
+
+/* ───────────── REVOLUCIÓN DE LAS CONSCIENCIAS ─────────────
+   El mismo idioma que el nombre de la portada: varias impresiones mal
+   registradas que el ratón separa. Allí anuncia quiénes somos; aquí
+   anuncia que el recorrido ha cambiado de estado. Se sale del carril
+   de texto a propósito —se mete en el territorio del tubo— porque un
+   punto de inflexión no cabe en una columna. */
+.rev,
+.agenda__cabeza {
+    --rx: 0;
+    --ry: 0;
+    position: relative;
+}
+
+.rev__t {
+    position: relative;
+    margin: 0 0 var(--s-4);
+    font-size: clamp(2.1rem, 7.2vw, 6.2rem);
+    font-weight: 800;
+    line-height: .90;
+    letter-spacing: -.04em;
+    text-transform: none;
+}
+
+@media (min-width: 900px) {
+
+    /* Rompe el carril: el aparato y el título comparten el mismo aire. */
+    .rev__t {
+        margin-right: calc(-40% + 4%);
+    }
+}
+
+.rev__l {
+    display: block;
+}
+
+.rev__l--2,
+.rev__l--3,
+.rev__l--4 {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.rev__l--4 {
+    color: var(--green);
+    opacity: .30;
+    transform: translate3d(calc(var(--rx) * -20px), calc(var(--ry) * -12px), 0);
+}
+
+.rev__l--3 {
+    color: var(--blue);
+    opacity: .34;
+    transform: translate3d(calc(var(--rx) * -12px), calc(var(--ry) * -7px), 0);
+}
+
+.rev__l--2 {
+    color: var(--coral);
+    opacity: .40;
+    transform: translate3d(calc(var(--rx) * -6px), calc(var(--ry) * -4px), 0);
+}
+
+.rev__l--1 {
+    position: relative;
+    color: var(--cream);
+    transform: translate3d(calc(var(--rx) * 5px), calc(var(--ry) * 3px), 0);
+    /* Se lee encima del tubo, y el tubo tiene zonas claras: la misma
+     penumbra local que llevan las preguntas sobre el metraje. */
+    text-shadow: 0 3px 30px rgba(16, 14, 12, .85), 0 0 10px rgba(16, 14, 12, .6);
+}
+
+.rev__l,
+.rev__t {
+    transition: transform 140ms linear;
+}
+
+.rev__sub {
+    font-size: clamp(1.15rem, 2.4vw, 2rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -.02em;
+    color: var(--cream);
+    margin: 0 0 var(--s-3);
+    max-width: 24ch;
+}
+
+.rev .lede {
+    max-width: 46ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .rev__l--2,
+    .rev__l--3,
+    .rev__l--4 {
+        display: none;
+    }
+}
+
+
+/* ───────────── CAUSAS · la costa detrás del papel ─────────────
+   Un fondo de verdad, no un bloque insertado: ocupa la sección entera
+   y el contenido va encima. Pero aquí se lee tinta sobre crema, así
+   que el metraje entra muy velado —lo justo para que el papel respire
+   y se note que hay agua moviéndose debajo—. */
+.causas {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+}
+
+.causas__fondo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: clip;
+}
+
+.causas__fondo video {
+    position: sticky;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    /* Se nota que hay mar moviéndose: menos gris, más exposición y un
+     velo que se retira. El texto de esta sección es tinta sobre crema
+     y tiene margen de sobra —comprobado—, así que el fondo puede
+     permitirse existir. */
+    filter: grayscale(.22) contrast(1.02) brightness(1.06) saturate(.9) sepia(.14);
+    opacity: .72;
+}
+
+.causas__velo {
+    position: sticky;
+    top: 0;
+    display: block;
+    height: 100vh;
+    margin-top: -100vh;
+    background:
+        linear-gradient(180deg, var(--paper) 0, rgba(246, 235, 207, .40) 16%,
+            rgba(246, 235, 207, .40) 84%, var(--paper) 100%);
+}
+
+.causas .band__inner {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* ───────────── AGENDA · su propio suelo ─────────────
+   El método se quedó en el papel —ahí tiene que verse el pincel— y la
+   agenda trae el suyo: es uno de los dos momentos oscuros donde vive
+   la red de conexiones. */
+.agenda {
+    background: #14130F;
+}
+
+.agenda__red,
+.sumate__red {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: clip;
+}
+
+.agenda__red canvas,
+.sumate__red canvas {
+    position: sticky;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Se disuelve por los dos extremos para que entre y salga del tejido
+   sin que se vea dónde empieza el lienzo. */
+.agenda__red {
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+.agenda {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+}
+
+.agenda>.band__inner {
+    position: relative;
+    z-index: 1;
+}
+
+/* ───────────── SÚMATE · el cierre vuelve a la red ───────────── */
+.sumate {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+}
+
+.sumate__red {
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 100%);
+}
+
+/* El metraje que ya estaba se queda, pero se retira para dejarle el
+   primer plano a las conexiones. */
+.sumate .sumate__bg {
+    opacity: .18;
+}
+
+.sumate>.band__inner,
+.sumate .band__inner {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* ───────────── AGENDA CULTURAL ─────────────
+   Tres líneas encadenadas, no tres títulos. El tamaño baja en cada
+   escalón y por eso se leen como una sola frase que va bajando la voz:
+   qué es (agenda), de dónde viene (el método) y qué trae (las olas). */
+.agenda__cabeza {
+    margin-bottom: var(--s-5);
+}
+
+/* El mismo tratamiento exacto que «Revolución de las consciencias»:
+   reutiliza sus capas (.rev__l) en vez de imitarlas, para que si algún
+   día se afina una, la otra vaya detrás sola. Sólo cambia el cuerpo,
+   porque aquí el título manda sobre una sección entera y allí convive
+   con la televisión. */
+.agenda__t {
+    position: relative;
+    margin: 0;
+    font-size: clamp(2.4rem, 8vw, 6.6rem);
+    font-weight: 800;
+    line-height: .90;
+    letter-spacing: -.04em;
+    text-transform: none;
+}
+
+.agenda__t2 {
+    font-size: clamp(1.5rem, 3.8vw, 3.1rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -.03em;
+    color: var(--cream);
+    margin: .28em 0 0;
+    opacity: .92;
+}
+
+.agenda__t3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.15rem, 2.6vw, 2.1rem);
+    line-height: 1.15;
+    color: var(--yellow);
+    margin: .34em 0 0;
+}
+
+/* Se perdía: era del tamaño de una etiqueta y a media opacidad. No se
+   arregla agrandándolo todo — se arregla sacándolo del registro de
+   «letra pequeña» y dándole cuerpo de frase. */
+/* Se perdía: cuerpo de etiqueta y media opacidad. Se arregla sacándolo
+   del registro de «letra pequeña», no agrandando la sección entera. */
+.agenda__pie {
+    margin: var(--s-3) 0 24px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
+    line-height: 1.5;
+    color: rgba(246, 235, 207, .88);
+    max-width: 46ch;
+}
+
+.agenda__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Seis niveles, y ninguno resuelto sólo con tamaño: la fecha manda por
+   interletrado y color, el nombre por cuerpo, la idea por familia, la
+   descripción por medida, y lo logístico baja de tono sin perder
+   contraste — que es donde estaba el problema: se leía mal por
+   opacidad, no por pequeño.
+   El espaciado también jerarquiza: mucho aire entre eventos, poco
+   entre las líneas de un mismo evento. */
+.ola {
+    display: grid;
+    gap: 4px var(--s-3);
+    grid-template-columns: 1fr;
+    padding-block: var(--s-5);
+    border-top: 1px solid rgba(246, 235, 207, .20);
+}
+
+@media (min-width: 900px) {
+    .ola {
+        grid-template-columns: minmax(0, 9rem) minmax(0, 1fr) minmax(0, 9rem);
+        align-items: start;
+    }
+}
+
+/* 1 · la fecha */
+.ola__dia {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(246, 235, 207, .78);
+}
+
+.ola__punto {
+    width: .55rem;
+    height: .55rem;
+    border-radius: 50%;
+    background: var(--c);
+    flex: none;
+}
+
+.ola__cuerpo {
+    min-width: 0;
+}
+
+/* 2 · el nombre, protagonista de la tarjeta */
+.ola__nombre {
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+    color: var(--cream);
+    margin: 0;
+}
+
+@media (max-width: 899px) {
+    .ola__nombre {
+        font-size: 20px;
+    }
+}
+
+/* 3 · la idea: secundaria por color y familia, no por tamaño */
+.ola__lema {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.35;
+    /* Los colores de causa se eligieron para el papel crema. Sobre suelo
+     oscuro el azul cae a dos a uno y deja de leerse, así que aquí van
+     mezclados hacia la crema: conservan de qué causa hablan y suben a
+     un contraste que se puede leer. El punto de la izquierda sí lleva
+     el color puro — es una marca, no texto. */
+    color: color-mix(in srgb, var(--c) 62%, var(--cream));
+    margin: 4px 0 0;
+}
+
+/* 4 · la descripción, en medida corta para que no haya renglones largos */
+.ola__t {
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 12px 0 0;
+    max-width: 600px;
+    color: rgba(246, 235, 207, .88);
+}
+
+.ola__extra {
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 6px 0 0;
+    max-width: 600px;
+    color: rgba(246, 235, 207, .74);
+    font-style: italic;
+}
+
+/* 5 · lo logístico: más suave que la descripción, pero legible */
+.ola__donde {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 8px 0 0;
+    color: rgba(246, 235, 207, .68);
+    letter-spacing: .04em;
+    text-transform: none;
+}
+
+/* 6 · la cuenta atrás: se ve, y no compite con el nombre */
+.ola__falta {
+    margin: 0;
+    color: color-mix(in srgb, var(--c) 62%, var(--cream));
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+@media (min-width: 900px) {
+    .ola__falta {
+        text-align: right;
+    }
+}
+
+
+/* ───────────── EL HUMO DEL MÉTODO ─────────────
+   Por debajo del contenido y por encima del papel: el color se posa en
+   el aire de la sección, no encima de lo que hay que leer. */
+.metodo {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+}
+
+.humo {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: clip;
+}
+
+.humo canvas {
+    position: sticky;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100vh;
+    will-change: transform;
+}
+
+.metodo>.band__inner {
+    position: relative;
+    z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .humo {
+        display: none;
+    }
+}
+
+/* ───────────── 03 · CASA ÁGORA ─────────────
+   La casa entra en el relato como sección, no como anexo. Se eligió el
+   recorrido narrativo —la opción C— y no el 3D: el proyecto no tiene
+   ninguna librería 3D ni ningún modelo de la casa, sólo pinturas, y
+   traer Three.js para mover una imagen habría sido peso sin relato. En
+   cambio ya existía `onScrollProgress`, el mismo motor que mueve el
+   resto de la página, así que la aproximación a la casa habla el
+   idioma que la página ya hablaba.
+
+   Los puntos son los de la landing propia, en los mismos porcentajes
+   sobre la misma pintura. */
+/* El remate del segmento. Un sticky deja de pegar cuando su base
+   alcanza la del contenedor, o sea una altura de escenario antes del
+   final: sin este respiro la casa se despegaba en el 73 % y se iba
+   justo cuando empezaba «Esta casa no existe para vender». Con él,
+   acompaña el cierre entero y sale después, no durante. */
+/* El pincel de la portada (#campo, fixed detrás de todo) queda tapado
+   por el fondo sólido que .band--dark le pinta a cada banda oscura —
+   no es que se apague, es que no se ve. Casa Ágora pide la misma
+   continuidad visual que la portada, así que acá se le quita esa
+   tapa. El escenario (red, cielo, bruma, la lámina) sigue pintando su
+   propia atmósfera encima, sin tocar; lo que cambia es el fondo que
+   había DETRÁS de todo, que antes era negro plano.
+
+   Ese cambio deja en evidencia que buena parte del texto de esta
+   sección estaba coloreado en crema —correcto sobre el fondo oscuro
+   que ya no existe—. Cada regla de acá abajo marcada "· fondo claro"
+   es ese mismo texto, recoloreado para seguir siendo legible sobre
+   papel en vez de sobre negro. Nada de esto cambia tipografía,
+   tamaños, layout ni la identidad de ningún componente — solo color,
+   y solo donde el cambio de fondo lo exige. */
+.casa {
+    position: relative;
+    overflow: clip;
+    padding-bottom: clamp(16rem, 34vh, 24rem);
+    background: transparent;
+}
+
+/* ── legibilidad sobre el pincel y la red viva ──
+   El fondo ya es el correcto — pincel + raíces, igual que la
+   portada — y no se toca. Esto es solo la capa de texto encima,
+   ajustada para un fondo con textura y movimiento en vez de un
+   negro plano. En orden, tal como se pidió:
+
+   1-2 · más peso y más tinta en el texto chico, solo dentro de Casa
+        Ágora (no se tocan los tokens globales del sitio).
+   3 · un velo de papel muy difuso detrás de cada bloque — una
+       mancha, no un rectángulo — que de paso desenfoca el pincel
+       justo ahí (eso resuelve el punto 5 sin tocar campo.js).
+   4 · un halo crema muy leve en los títulos, para los bordes del
+       bloque donde el velo ya casi no pesa. */
+.casa {
+    --ink-2: #2c2a22;
+    --ink-3: #47443a;
+    --muted: #55503f;
+}
+
+.casa .prose,
+.casa .lede,
+.casa .casa__estado,
+.casa .icause__p,
+.casa .paq__q {
+    font-weight: 500;
+}
+
+/* El velo va pegado a cada elemento de texto, no al bloque que lo
+   contiene: `.casa__rotulo` mide una pantalla entera (es el flex que
+   centra verticalmente), así que ponerlo ahí desenfocaba media
+   pantalla en vez de una mancha detrás de las líneas. Cada regla de
+   abajo es una mancha del tamaño de SU párrafo o título, no del
+   bloque. */
+.casa__golpe,
+.casa .prose,
+.casa .lede,
+.casa__head .sec-head__h,
+.casa .casa__num,
+.casa__estado,
+.casa .casa__h,
+.casa .sec-head .meta,
+.casa .sec-head--split .meta {
+    position: relative;
+    isolation: isolate;
+}
+
+.casa__golpe::before,
+.casa .prose::before,
+.casa .lede::before,
+.casa__head .sec-head__h::before,
+.casa .casa__num::before,
+.casa__estado::before,
+.casa .casa__h::before,
+.casa .sec-head .meta::before,
+.casa .sec-head--split .meta::before {
+    content: '';
+    position: absolute;
+    inset: -2.4rem -3.2rem;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(ellipse 55% 55% at 50% 50%,
+            rgba(240, 229, 202, .76) 0%,
+            rgba(240, 229, 202, .58) 32%,
+            rgba(240, 229, 202, .34) 52%,
+            rgba(240, 229, 202, .14) 72%,
+            rgba(240, 229, 202, 0) 94%);
+}
+
+.casa .sec-head__h,
+.casa .casa__golpe,
+.casa .casa__h {
+    text-shadow: 0 0 14px rgba(240, 229, 202, .9), 0 0 3px rgba(240, 229, 202, .95);
+}
+
+/* ── la red viva ──
+   El mismo organismo que cierra el sitio, detrás de toda la sección.
+   Se monta solo: `[data-red]` ya recorre el documento en el arranque.
+   Va en el fondo del apilamiento, así que la casa —que está recortada—
+   se ve contra una red que sigue creciendo. */
+.casa__red {
+    align-self: stretch;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.casa__red canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Las variables del escenario, tipadas. Declararlas como <number> es
+   lo correcto para algo que se interpola —sin registrar, el navegador
+   las trata como texto—, aunque no arregla ningún síntoma que
+   estuviéramos viendo: el retraso aparente de la opacidad era el panel
+   de pruebas estrangulando el reloj de animación, no el CSS. */
+@property --casa-op {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 1;
+}
+
+@property --velo {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --pz {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+/* ── EL ESCENARIO ──
+   La casa deja de pertenecer a un bloque y pasa a sostener el segmento
+   entero: el escenario se queda fijo mientras el relato pasa por
+   delante. Al terminar el <section> el sticky se suelta solo, así que
+   en «Nuestras causas» no queda ni rastro — no hace falta apagarlo a
+   mano ni vigilar dónde empieza la siguiente sección.
+
+   Dentro del escenario, cuatro planos: la red viva, el cielo, la bruma
+   y la casa recortada. Cada uno se mueve a su ritmo con el scroll. */
+.casa__escenario {
+    position: sticky;
+    top: var(--nav-h);
+    height: calc(100svh - var(--nav-h));
+    z-index: 0;
+    pointer-events: none;
+}
+
+.casa__plano {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-items: center;
+}
+
+.casa__plano>* {
+    grid-area: 1 / 1;
+}
+
+/* El relato sube sobre el escenario y corre por delante. */
+.casa__relato {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-100svh + var(--nav-h));
+}
+
+/* El velo: lo único que se interpone entre la casa y el texto. No es
+   una caja detrás de cada bloque —eso apagaría la casa— sino una sola
+   capa cuya opacidad sube donde el contenido se hace denso (la tabla
+   de paquetes, los módulos) y baja donde el relato respira. La escribe
+   el scroll en --velo. */
+.casa__velo {
+    z-index: 5;
+    pointer-events: none;
+    /* Dos capas con oficios distintos. El COLOR de fondo es plano y lo
+     modula el scroll: sube donde el contenido ocupa todo el ancho —la
+     tabla de paquetes, los módulos— y baja donde el relato respira.
+     La IMAGEN de fondo va siempre y es un degradado lateral suave, que
+     protege la columna izquierda, donde casi todo el texto empieza.
+     Con un solo degradado lateral el titular de los Paquetes caía
+     sobre la parte clara de la casa y no se leía. */
+    background-color: rgba(20, 19, 15, var(--velo, 0));
+    background-image: linear-gradient(92deg,
+            rgba(20, 19, 15, .52) 8%, rgba(20, 19, 15, .18) 52%, transparent 84%);
+    transition: background-color .6s var(--ease-out);
+}
+
+/* La red viva, el cielo y la bruma: el fondo del escenario. */
+.casa__red {
+    z-index: 0;
+    pointer-events: none;
+}
+
+.casa__red canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.casa__cielo {
+    z-index: 1;
+    pointer-events: none;
+    transform: translate3d(0, calc(var(--pz, 0) * 14px), 0);
+    will-change: transform;
+    background:
+        radial-gradient(52% 38% at 76% 44%, rgba(215, 180, 137, .22), transparent 70%),
+        radial-gradient(84% 56% at 80% 32%, rgba(184, 163, 141, .12), transparent 74%);
+}
+
+.casa__bruma {
+    z-index: 2;
+    pointer-events: none;
+    transform: translate3d(0, calc(var(--pz, 0) * -34px), 0) scale(1.06);
+    will-change: transform;
+    background:
+        radial-gradient(46% 26% at 66% 62%, rgba(217, 186, 146, .16), transparent 70%),
+        radial-gradient(70% 30% at 26% 70%, rgba(150, 158, 180, .09), transparent 74%);
+}
+
+/* La casa: recortada, a la derecha, sobre la malla con relieve. */
+.casa__lamina {
+    position: relative;
+    z-index: 3;
+    align-self: center;
+    justify-self: end;
+    width: min(1180px, 108%);
+    aspect-ratio: 1600 / 1067;
+    transform: translate3d(0, calc(var(--pz, 0) * -58px), 0);
+    will-change: transform;
+    /* Una sola variable, con el producto ya resuelto en JS. Son dos las
+     causas de atenuación —el bloque que se lee y la salida del
+     segmento— y multiplicarlas en un calc() dentro de una propiedad
+     que transiciona es pedirle peras al olmo; mejor que llegue hecho. */
+    opacity: var(--casa-op, 1);
+    transition: opacity .7s var(--ease-out);
+}
+
+/* La sombra de contacto, en el corte de la calle. */
+.casa__suelo {
+    position: absolute;
+    left: 50%;
+    bottom: 12%;
+    width: 84%;
+    height: 13%;
+    transform: translateX(-50%);
+    background: radial-gradient(50% 50% at 50% 50%, rgba(6, 5, 4, .72), transparent 76%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .casa__cielo,
+    .casa__bruma,
+    .casa__lamina {
+        transform: none;
+    }
+}
+
+/* El lienzo va encima de la <img> y la tapa cuando funciona. Nace
+   invisible: hasta que el módulo confirma que dibujó, lo que se ve es
+   la <img> con su máscara. El fundido cubre el primer frame. */
+.casa__lienzo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: block;
+    opacity: 0;
+    transition: opacity .5s var(--ease-out);
+}
+
+.casa__lamina.is-3d .casa__lienzo {
+    opacity: 1;
+}
+
+/* La <img> es el respaldo, y lleva la MISMA máscara por CSS: si WebGL
+   no arranca, tampoco entonces aparece un rectángulo. */
+.casa__lamina img {
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: url(/assets/img/casa-silueta.png);
+    mask-image: url(/assets/img/casa-silueta.png);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+/* En 3D la posición la escribe la proyección, no el porcentaje. Hasta
+   que llega el primer frame no hay dónde ponerlos, así que esperan
+   invisibles; el módulo los enciende al proyectarlos. */
+.casa__lamina img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* un punto de contraluz para que el zaguán encendido tire del ojo */
+    filter: saturate(1.02) contrast(1.03);
+}
+
+/* ── el cierre ──
+   Era una grilla a dos columnas porque compartía el bloque con
+   «los tres módulos» (Aprendizaje/Conexión/Acción); esos módulos ya
+   se integraron dentro del círculo, así que acá solo queda el texto
+   de cierre — centrarlo en vez de dejarlo pegado a una grilla vacía. */
+/* ── el cambio de etapa: de las causas a los Paquetes ──
+   Hasta acá la página cuenta las causas; a partir de los Paquetes
+   Ágora cuenta cómo involucrarse. Un papel un punto más hondo no
+   alcanzaba para que se notara: entre `--paper` y `--paper-3` hay
+   ocho puntos de luminosidad y a simple vista eso es casi nada.
+
+   Tampoco es la banda de tinta del sitio: eso resolvía el contraste
+   pero apagaba el pincel y sonaba a modo oscuro, que no es lo que
+   cuenta esta parte.
+
+   Lo que cambia es el ESTADO del papel, no el papel. La capa es un
+   barro cálido hecho con los dos colores que Ágora ya tiene en la
+   familia caliente: el ámbar del `--yellow` arriba y la terracota del
+   `--coral` abajo, en degradado, para que el ambiente evolucione en
+   vez de cambiar de golpe. Es el barro de la fachada de la propia
+   Casa Ágora, así que el color no viene de fuera.
+
+   Y se queda a media transparencia a propósito: el pincel de `#campo`
+   y las raíces siguen viéndose y siguen pudiéndose pintar por debajo,
+   sólo que ahora sobre tierra en vez de sobre papel crudo. La capa va
+   anclada a los bloques, no a un porcentaje de la sección: entra
+   fundida en el hueco que separa la última causa del rótulo de los
+   Paquetes (ahí no hay texto, así que ninguna causa se tiñe) y se
+   apaga igual de fundida dentro del relleno inferior, antes del
+   borde, para que «El círculo que no se detiene» siga sobre el papel
+   de siempre sin una línea de corte. */
+.casa {
+    --casa-ambar: rgba(224, 140, 62, .50);
+    /* familia --yellow  */
+    --casa-terracota: rgba(192, 90, 55, .58);
+    /* familia --coral   */
+    --casa-hueco: clamp(3rem, 9vh, 6rem);
+    /* separa causas de paquetes */
+    --casa-junta: clamp(2rem, 6vh, 4rem);
+    /* separa paquetes del cierre */
+    --casa-fundido: clamp(5rem, 11vh, 9rem);
+    /* cuánto tarda en entrar */
+    --casa-cola: clamp(16rem, 34vh, 24rem);
+    /* el padding inferior de .casa */
+}
+
+.casa__paquetes-b,
+.casa__inner {
+    position: relative;
+}
+
+.casa__paquetes-b::before,
+.casa__inner::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    left: calc(50% - 50vw);
+    width: 100vw;
+}
+
+.casa__paquetes-b::before {
+    top: calc(-1 * var(--casa-hueco));
+    bottom: calc(-.5 * var(--casa-junta));
+    background: linear-gradient(180deg,
+            transparent 0,
+            var(--casa-ambar) calc(var(--casa-hueco) + var(--casa-fundido)),
+            var(--casa-terracota) 100%);
+}
+
+/* Las dos capas se encuentran justo a la mitad del hueco que separa
+   los dos bloques, así que no hay ni solape ni costura: la segunda
+   arranca en la terracota con la que termina la primera. */
+.casa__inner::before {
+    top: calc(-.5 * var(--casa-junta));
+    bottom: calc(-1 * var(--casa-cola));
+    background: linear-gradient(180deg,
+            var(--casa-terracota) 0,
+            var(--casa-terracota) 45%,
+            transparent 100%);
+}
+
+.casa__inner {
+    margin-top: clamp(2rem, 6vh, 4rem);
+    display: grid;
+    justify-items: center;
+    text-align: center;
+}
+
+.casa__texto {
+    max-width: 46rem;
+}
+
+.casa__texto .prose {
+    margin-inline: auto;
+}
+
+.casa__golpe {
+    font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 .6em;
+    max-width: 24ch;
+    text-wrap: balance;
+}
+
+.casa__cierre {
+    margin: 1.2em 0 1.6em;
+    max-width: 40ch;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    color: var(--ink);
+}
+
+/* El cierre de Casa Ágora, centrado de verdad.
+   `text-align:center` sólo centra las líneas dentro de su caja: el
+   título tiene medida corta (24ch) y, sin `margin-inline:auto`, esa
+   caja se quedaba contra el borde izquierdo de la columna, así que
+   caía descolgado del eje de su párrafo, que sí lo tenía. Ése era el
+   defecto, y se corrige sin tocar el peso, el tamaño ni el número de
+   bloques: la composición sigue siendo la de siempre, dos títulos y
+   sus dos párrafos. La medida sube a 40ch sólo para que un título
+   corto quepa en una línea en vez de partirse y alargar el bloque. */
+.casa__texto .casa__golpe {
+    margin-inline: auto;
+    max-width: 40ch;
+    margin-block: clamp(1.4rem, 3vh, 2.2rem) .5em;
+}
+
+.casa__texto>.casa__golpe:first-child {
+    margin-top: 0;
+}
+
+.casa__texto .btn {
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+}
+
+.casa__modulos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: mod;
+}
+
+.casa__modulos li {
+    counter-increment: mod;
+    border-top: 1px solid rgba(246, 235, 207, .2);
+    padding: 1.1rem 0;
+}
+
+.casa__modulos h3 {
+    margin: 0 0 .35rem;
+    font-size: var(--t-md);
+    font-weight: 600;
+    color: var(--cream);
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+}
+
+.casa__modulos h3::before {
+    content: '0' counter(mod);
+    font-family: var(--mono);
+    font-size: var(--t-sm);
+    font-weight: 400;
+    color: rgba(246, 235, 207, .5);
+}
+
+.casa__modulos p {
+    margin: 0;
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    color: var(--ink-2);
+}
+
+/* ── la cartela que abren los puntos ── */
+/* La cartela es una isla de papel dentro de una banda oscura. En vez
+   de repintar cada hijo, devuelve los tokens claros: .band--dark había
+   remapeado --ink a crema y el título salía crema sobre crema. */
+.casa__cartela {
+    --ink: #141310;
+    --ink-2: #3a382f;
+    --ink-3: #5b5849;
+    --muted: #696454;
+    --line: #D9D2C0;
+    color: var(--ink);
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    z-index: 60;
+    width: min(560px, 100%);
+    transform: translate(-50%, 100%);
+    background: var(--cream);
+    color: var(--ink);
+    padding: clamp(1.5rem, 4vw, 2.4rem);
+    box-shadow: 0 -2vh 6vh rgba(0, 0, 0, .45);
+    transition: transform .5s var(--ease-out);
+    max-height: 70svh;
+    overflow-y: auto;
+}
+
+.casa__cartela.is-on {
+    transform: translate(-50%, 0);
+}
+
+.casa__cartela .meta {
+    color: var(--muted);
+}
+
+.casa__cartela-h {
+    font-size: clamp(1.4rem, 3.2vw, 2rem);
+    margin: .4rem 0 .7rem;
+}
+
+.casa__cartela .prose {
+    color: var(--ink-2);
+    margin: 0;
+}
+
+.casa__cerrar {
+    position: absolute;
+    top: .9rem;
+    right: .9rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: none;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--ink-3);
+    cursor: pointer;
+}
+
+.casa__cerrar:hover {
+    background: rgba(20, 19, 16, .06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    /* sin WebGL y sin movimiento: la pintura, quieta */
+    .casa__lienzo {
+        display: none;
+    }
+}
+
+.casa__cartela-q {
+    margin: 0 0 .8rem;
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    line-height: 1.6;
+    color: var(--ink-3);
+}
+
+/* En móvil la casa se lee mejor a sangre: el ancho de la banda la
+   dejaba en 310px y la pintura es la sección, no una ilustración. */
+@media (max-width: 700px) {
+    /* En móvil la casa no se pone detrás del texto: se apilan. Tapar el
+     titular con la fachada era el riesgo evidente en pantalla estrecha. */
+    /* En móvil la casa no se pone detrás del texto: se apilan. */
+
+
+    /* El cielo se queda: es un degradado barato, mantiene la profundidad
+     que pediste en móvil y además arropa el resto de atardecer que el
+     recorte deja pegado al alero. Lo que se va es el paralaje y la
+     bruma, que ahí no aportan y sí cuestan. */
+    /* Al apilarse, la red dejaba de ser fondo y pasaba a ser una fila
+     del flujo: 104 px de alto, invisible y ocupando sitio. Se saca del
+     flujo para que vuelva a ser lo que es, el fondo de la escena. */
+    .casa__red {
+        position: absolute;
+        inset: 0;
+    }
+
+    /* Sólo el degradado cálido, y centrado donde el recorte deja el
+     resto de atardecer. El azulado de escritorio llegaba vivo al
+     límite del elemento y dibujaba un panel con canto duro bajo la
+     casa: justo el rectángulo que estamos quitando. */
+    .casa__cielo {
+        position: absolute;
+        inset: -8% -12% 34% 0;
+        transform: none;
+        background: radial-gradient(64% 54% at 76% 50%, rgba(215, 180, 137, .30), transparent 72%);
+    }
+
+    .casa__bruma {
+        display: none;
+    }
+
+    .casa__lamina {
+        width: 132%;
+        justify-self: center;
+        transform: none;
+    }
+
+    .casa__cartela {
+        border-radius: var(--r-media) var(--r-media) 0 0;
+    }
+}
+
+/* El rótulo vive en el mismo espacio que la casa, a su izquierda: el
+   fondo que queda ahí libre es el propio aire de la sección, así que
+   el texto no se apoya sobre una imagen, se apoya sobre el mismo
+   espacio en el que está la casa. */
+/* El rótulo es ahora el primer bloque del relato, no una capa del
+   escenario: ocupa su sitio en el flujo y la casa queda detrás. */
+.casa__rotulo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.6rem, 5vh, 3.2rem);
+    min-height: calc(100svh - var(--nav-h));
+    justify-content: center;
+    padding-block: clamp(2rem, 6vh, 4rem);
+}
+
+/* dentro del rótulo hay controles: tienen que poder tocarse */
+.casa__rotulo a,
+.casa__rotulo button,
+.casa__semana {
+    pointer-events: auto;
+}
+
+/* El ancho se le pone al titular, no al rótulo entero: si se lo pone
+   al bloque, el «03 — Casa Ágora · Escazú, Costa Rica» también se
+   estrecha y parte «Rica» en una línea suelta.
+   Y nada de `ch` acá: el rótulo hereda la tipografía del cuerpo y el
+   titular va en display a 100 px, así que 22ch daban 222 px y ocho
+   líneas. */
+.casa__head .sec-head__h {
+    max-width: min(46rem, 92%);
+}
+
+/* En móvil el titular manda sobre todo el ancho: ese 64 %, que en
+   escritorio lo coloca junto a la casa, acá lo partía en cinco
+   líneas. Va después de la regla general a propósito: con la misma
+   especificidad gana la última, y antes perdía por orden. */
+@media (max-width: 700px) {
+    .casa__head .sec-head__h {
+        max-width: none;
+    }
+}
+
+/* Un velo largo y muy suave bajo el titular. La primera versión subía
+   a 92 % de opacidad en el 22 % de su altura y dejaba un canto
+   horizontal atravesando la pintura —el mismo defecto que estamos
+   quitando—. Ahora es un degradado de tres alturas que nunca llega a
+   verse como borde; la legibilidad la termina de dar la sombra del
+   texto, no una caja. */
+/* Y sólo existe cuando el texto está de verdad ENCIMA de la casa. Por
+   debajo de 900px se apilan, no hay nada que velar, y el velo lo
+   único que hacía era tapar el empedrado de golpe. */
+/* Ya no hace falta velo: en escritorio el texto ocupa la franja
+   izquierda, que es fondo libre, y la casa entra por la derecha. El
+   velo existía cuando el titular caía encima de la fachada. */
+.casa__rotulo::before {
+    content: none;
+}
+
+@media (min-width: 900px) {
+
+    /* La casa se retira a la derecha y deja la izquierda al texto. Se
+     solapan a propósito en la franja del zaguán —la parte más oscura
+     de la fachada—: si no se tocaran, volverían a ser dos bloques uno
+     al lado del otro en vez de compartir un espacio. */
+    .casa__lamina {
+        width: min(880px, 66%);
+    }
+
+    .casa__head {
+        max-width: 40rem;
+    }
+
+    .casa__rotulo {
+        padding-right: 30%;
+    }
+
+}
+
+@media (min-width: 1500px) {
+    .casa__lamina {
+        width: min(1000px, 62%);
+    }
+}
+
+/* Esa sombra oscura ayudaba a que el texto crema despegara del fondo
+   negro. Con tinta oscura sobre papel el texto ya se lee solo — no
+   hace falta ayuda, y una sombra oscura sobre tinta oscura no suma
+   nada. */
+
+/* ── 03 · la numeración de sección ──
+   El número pesa tanto como el nombre: es lo que dice en qué punto del
+   recorrido está uno. */
+.casa__num {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(.8rem, 2vw, 1.4rem);
+    margin: 0 0 clamp(.6rem, 2vh, 1.2rem);
+}
+
+.casa__num-n {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.4rem, 6vw, 4.6rem);
+    line-height: .82;
+    letter-spacing: var(--track-tight);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(20, 19, 15, .35);
+}
+
+/* sin text-stroke el número quedaría invisible: se rellena */
+@supports not (-webkit-text-stroke: 1px currentColor) {
+    .casa__num-n {
+        color: var(--ink-3);
+    }
+}
+
+.casa__num-t {
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.casa__num-t::before {
+    content: '— ';
+}
+
+/* la palabra en cursiva dentro del titular grande. El amarillo
+   funcionaba sobre negro; sobre papel es casi ilegible (dos tonos
+   claros), así que acá se apoya en la tinta como el resto del
+   titular — sigue siendo la misma cursiva serif, solo sin el acento
+   de color que ya no tiene contraste. */
+.casa .sec-head__h em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--ink);
+}
+
+
+/* ═══════════ DEMOCRACIA VIVA · LAS TRES DIMENSIONES ═══════════
+   Democracia Viva es el paraguas; dentro conviven tres formas de
+   ejercerla. Lo que impide que se lea como tres páginas pegadas es
+   que las tres comparten la misma gramática: la bisagra las anuncia
+   con el patrón número–nombre–verbo, y cada cabecera repite ese mismo
+   patrón. Se reconocen como hermanas, no como capítulos importados.
+
+   La página no cambia de color. Una dimensión con acento propio
+   —Niñez y Adolescencia conserva su coral— lo usa sólo en el número y
+   en el filete de su cabecera. */
+
+.dbisagra {
+    padding: clamp(var(--s-5), 9vh, var(--s-6)) var(--gutter);
+    background: var(--ink);
+    color: var(--cream);
+    /* devuelve los tokens claros que .ledger da por supuestos */
+    --ink-2: rgba(246, 235, 207, .78);
+    --ink-3: rgba(246, 235, 207, .58);
+    --line: rgba(246, 235, 207, .18);
+}
+
+.dbisagra .dsec__h {
+    grid-column: 1 / span 6;
+}
+
+.dbisagra .meta {
+    color: rgba(246, 235, 207, .55);
+}
+
+/* La tabla que anunciaba las formas antes de mostrarlas (.dbisagra__l)
+   se quitó: el título entrega directo a la primera. */
+
+/* ── la cabecera de cada dimensión ── */
+.ddim__head {
+    padding: clamp(var(--s-5), 8vh, var(--s-6)) var(--gutter) clamp(1.4rem, 3vh, 2.2rem);
+    scroll-margin-top: var(--nav-h);
+    position: relative;
+}
+
+/* el filete: lo único, junto al número, que lleva el color propio */
+.ddim__head::before {
+    content: '';
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: 0;
+    height: 2px;
+    background: var(--c);
+}
+
+.ddim__n {
+    grid-column: 1 / span 2;
+    font-family: var(--display);
+    font-weight: 800;
+    line-height: .82;
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    color: var(--c);
+    margin: 0 0 .1em;
+}
+
+.ddim__t {
+    grid-column: 1 / span 7;
+    font-size: var(--t-lg);
+    margin: 0;
+}
+
+.ddim__v {
+    grid-column: 1 / span 7;
+    margin: .5rem 0 0;
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.ddim__emb {
+    grid-column: 10 / -1;
+    grid-row: 1 / span 3;
+    justify-self: end;
+    align-self: center;
+    width: clamp(64px, 9vw, 108px);
+    /* el emblema hereda el --c de la cabecera: se pinta en el color de
+     su dimensión sin que haya que repetirlo */
+}
+
+.ddim__emb svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 860px) {
+
+    .ddim__n,
+    .ddim__t,
+    .ddim__v {
+        grid-column: 1 / -1;
+    }
+
+    .ddim__emb {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        justify-self: start;
+        margin-top: 1rem;
+    }
+}
+
+/* Lupa dentro de la causa: la misma tabla de la portada, sin el
+   «Explorar →» —acá no hay a dónde llevar todavía—. */
+.dlupa {
+    grid-column: 1 / -1;
+    margin: clamp(1.2rem, 3vh, 2rem) 0 1rem;
+    padding: 0;
+    list-style: none;
+}
+
+.dlupa .lrow {
+    grid-template-columns: 4rem minmax(0, .8fr) minmax(0, 1.4fr);
+}
+
+@media (max-width: 760px) {
+    .dlupa .lrow {
+        grid-template-columns: 3rem 1fr;
+    }
+
+    .dlupa .lrow__s {
+        grid-column: 2;
+    }
+}
+
+/* La lente recorre el registro: sólo mientras alguien la está mirando,
+   como el resto de los emblemas. */
+.emb--lente .emb__lente,
+.emb--lente .emb__mango,
+.emb--lente .emb__claro {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.is-in .emb--lente .emb__lente,
+.is-in .emb--lente .emb__mango {
+    animation: emb-lente 9s var(--ease-out) infinite;
+}
+
+@keyframes emb-lente {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(0, -7px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .is-in .emb--lente .emb__lente,
+    .is-in .emb--lente .emb__mango {
+        animation: none;
+    }
+}
+
+/* ── la semana ──
+   Dos estados, no siete. La casa entre semana y la casa el sábado. */
+.casa__semana {
+    margin-top: clamp(1.4rem, 4vh, 2.4rem);
+    display: grid;
+    gap: clamp(1rem, 3vw, 2.4rem);
+}
+
+/* Ya no va a lo ancho de la banda sino en la columna del titular,
+   junto a la casa que gobierna: se apila. */
+.casa__semana {
+    grid-template-columns: 1fr;
+    max-width: 34rem;
+}
+
+.casa__dias {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .2rem;
+}
+
+.casa__dia {
+    position: relative;
+    padding: .55rem 0 .6rem 1.4rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    font-size: var(--t-md);
+    font-weight: 500;
+    color: var(--ink-3);
+    transition: color .45s var(--ease-out);
+}
+
+/* el punto que dice cuál está encendida */
+.casa__dia::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -3.5px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .35;
+    transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
+}
+
+.casa__dia:hover {
+    color: var(--ink-2);
+}
+
+.casa__dia:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+.casa__dia.is-en {
+    color: var(--ink);
+}
+
+.casa__dia.is-en::before {
+    opacity: 1;
+    transform: scale(1.25);
+    background: var(--yellow);
+}
+
+.casa__estados {
+    position: relative;
+    min-height: 6.5rem;
+}
+
+.casa__estado {
+    margin: 0;
+    max-width: 52ch;
+    font-size: var(--t-md);
+    line-height: 1.55;
+    color: var(--ink-2);
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    inset: 0;
+    transform: translateY(6px);
+    transition: opacity .5s var(--ease-out), transform .5s var(--ease-out), visibility .5s;
+}
+
+.casa__estado.is-en {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    position: relative;
+}
+
+/* ── titulares interiores de la sección ── */
+.casa__h {
+    font-size: var(--t-lg);
+    margin: 0 0 .5em;
+    color: var(--ink);
+    grid-column: 1 / -1;
+}
+
+.casa__h em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink);
+}
+
+.casa__sabado,
+.casa__paquetes-b,
+.casa__circuito-b {
+    margin-top: clamp(3rem, 9vh, 6rem);
+}
+
+@media (min-width: 900px) {
+    .casa__sabado {
+        display: grid;
+        grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+        gap: clamp(2rem, 5vw, 4rem);
+        align-items: start;
+    }
+
+    .casa__sabado .casa__h {
+        grid-column: 1;
+        margin: 0;
+    }
+
+    .casa__sabado-t {
+        grid-column: 2;
+    }
+}
+
+.casa__circuito-p {
+    max-width: 62ch;
+}
+
+/* ── los paquetes ──
+   Salen de la fachada y tienen bloque propio. Son el mecanismo con el
+   que se financia el método: no van sobre una ventana. */
+.casa__paquetes {
+    list-style: none;
+    margin: clamp(1.6rem, 4vh, 2.6rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border-block: 1px solid var(--line);
+}
+
+/* Dos columnas, no tres: con cuatro paquetes la retícula de tres deja
+   una fila huérfana y «Ágora Justa» cae debajo del primero. En 2×2 el
+   cuarto queda justo debajo de Comunidad Ágora, que es donde va, y los
+   cuatro se leen como una sola familia. */
+@media (min-width: 860px) {
+    .casa__paquetes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* El fondo del contenedor es el color de la línea y sólo debe verse
+   por los huecos de 1px: la ficha tiene que ser opaca o el bloque
+   entero se lee como una caja gris. Antes esa opacidad era --paper
+   oscuro (la ficha "oscura" sobre banda oscura); ahora Casa Ágora es
+   papel, así que la ficha pasa a --cream, el mismo "un paso más clara
+   que el lienzo" que usa cualquier tarjeta clara del sitio — mismo
+   patrón, no uno nuevo. */
+.paq {
+    background: var(--cream);
+}
+
+.paq__b {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .55rem;
+    padding: clamp(1.4rem, 3vw, 2.2rem) clamp(1rem, 2vw, 1.6rem) clamp(1.4rem, 3vw, 2rem) 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: background .5s var(--ease-out);
+}
+
+.paq__b:hover,
+.paq__b:focus-visible {
+    background: rgba(20, 19, 16, .045);
+    outline: none;
+}
+
+.paq__b:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.paq__n {
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    color: var(--ink-3);
+}
+
+.paq__t {
+    font-size: var(--t-md);
+    color: var(--ink);
+}
+
+.paq__q {
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    color: var(--ink-2);
+    flex: 1;
+}
+
+.paq__x {
+    margin-top: .4rem;
+    font-family: var(--mono);
+    font-size: var(--t-xs);
+    letter-spacing: var(--track-meta);
+    text-transform: uppercase;
+    color: var(--ink-3);
+    transition: color .4s var(--ease-out);
+}
+
+.paq__b:hover .paq__x,
+.paq__b:focus-visible .paq__x {
+    color: var(--ink);
+}
+
+.paq__b .arw {
+    transition: transform .5s var(--ease-out);
+    display: inline-block;
+}
+
+.paq__b:hover .arw {
+    transform: translateX(4px);
+}
+
+/* ── el circuito ──
+   Una línea que sale de la casa, recorre y vuelve. Se traza con el
+   scroll, con la misma técnica que los emblemas. */
+.casa__circuito {
+    margin-top: clamp(1.6rem, 4vh, 2.6rem);
+}
+
+.circ {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+}
+
+.circ__via {
+    stroke: rgba(246, 235, 207, .16);
+    stroke-width: 1.5;
+}
+
+.circ__luz {
+    stroke: var(--yellow);
+    stroke-width: 2;
+}
+
+.circ__p {
+    fill: var(--paper);
+    stroke: rgba(246, 235, 207, .3);
+    stroke-width: 1.5;
+    transition: fill .5s var(--ease-out), stroke .5s var(--ease-out), r .5s var(--ease-out);
+}
+
+.circ__p.is-en {
+    fill: var(--yellow);
+    stroke: var(--yellow);
+}
+
+.circ__l {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(.9rem, 2vw, 1.4rem);
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+
+.circ__l li {
+    opacity: .35;
+    transform: translateY(5px);
+    transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+    transition-delay: calc(var(--i) * 40ms);
+}
+
+.circ__l li.is-en {
+    opacity: 1;
+    transform: none;
+}
+
+.circ__l b {
+    display: block;
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: .2rem;
+}
+
+.circ__l span {
+    font-size: var(--t-xs);
+    line-height: 1.5;
+    color: var(--ink-2);
+}
+
+.circ__vuelta {
+    margin: .9rem 0 0;
+    color: var(--ink-3);
+}
+
+/* en pantallas estrechas la pista curva no aporta: la lista sí */
+@media (max-width: 700px) {
+    .circ {
+        display: none;
+    }
+
+    .circ__l {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .circ__l li {
+        position: relative;
+        padding: .85rem 0 .85rem 1.6rem;
+        border-top: 1px solid var(--line);
+    }
+
+    .circ__l li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 1.35rem;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--yellow);
+        opacity: 0;
+        transition: opacity .5s var(--ease-out);
+    }
+
+    .circ__l li.is-en::before {
+        opacity: 1;
+    }
+
+    .circ__l li:last-child {
+        border-bottom: 1px solid var(--line);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .casa__estado,
+    .circ__l li,
+    .circ__p {
+        transition: none;
+    }
+}

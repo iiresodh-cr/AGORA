@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=ai-legible&utm_source=comment&utm_medium=referral&utm_id=e97952d1-36da-4756-a015-3fd84e63bc2f
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="hosting-provider" content="Netlify">
+<meta name="netlify-deploy" content="https://netlify.new/?utm_campaign=ai-legible&amp;utm_source=meta&amp;utm_medium=referral&amp;utm_id=e97952d1-36da-4756-a015-3fd84e63bc2f">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centro Ágora Costa Rica · Nadie avanza solo</title>
+<meta name="description" content="Ágora es un centro ciudadano costarricense: tres causas para construir país desde las comunidades. Democracia viva, territorios y economías que conectan.">
+<meta name="theme-color" content="#F0E5CA">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Centro Ágora Costa Rica · Nadie avanza solo">
+<meta property="og:description" content="Queremos tu tiempo. Tres causas para construir país desde las comunidades.">
+<meta property="og:image" content="assets/img/p01.jpg">
+<meta property="og:locale" content="es_CR">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="assets/img/p01.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<!-- ══════════════ EL CAMPO (pigmento + red, WebGL2) ══════════════ -->
+<div class="campo" id="campo" aria-hidden="true">
+  <canvas id="campoCanvas"></canvas>
+</div>
+
+<!-- ══════════════ NAV ══════════════ -->
+<header class="nav" id="nav">
+  <div class="nav__start">
+    <a class="nav__brand" href="#top" data-nav-home>ágora<span>.</span></a>
+
+    <!-- Discreet by design: two words and a rule, never a player. -->
+    <button class="sonido" id="sonido" type="button" aria-pressed="false" hidden>
+      <span class="sonido__rule" aria-hidden="true"></span>
+      <span class="sonido__t">Sonido</span>
+      <span class="sonido__s" data-sonido-estado>OFF</span>
+    </button>
+  </div>
+
+  <nav class="nav__links" aria-label="Principal">
+    <!-- Causas, Paquetes y Lupa ya no son anclas propias: viven dentro
+         de Casa Ágora, que es el único gran contenedor. -->
+    <a href="#existimos">Por qué existimos</a>
+    <a href="#casa">Casa Ágora</a>
+    <a href="#agenda">Agenda</a>
+  </nav>
+
+  <div class="nav__end">
+    <a class="btn btn--solid nav__cta" href="#sumate">Súmate</a>
+    <button class="nav__burger" id="burger" aria-expanded="false" aria-controls="menu">
+      <span class="vh">Abrir menú</span>
+      <span class="nav__burger-b" aria-hidden="true"></span>
+      <span class="nav__burger-b" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════════ MOBILE MENU ══════════════ -->
+<div class="menu" id="menu" hidden>
+  <nav class="menu__list" aria-label="Menú">
+    <a href="#existimos"><span class="menu__n">01</span> La mentira que mejor nos gobierna</a>
+    <a href="#casa"><span class="menu__n">02</span> Casa Ágora</a>
+    <a href="#circulo"><span class="menu__n">03</span> El círculo que no se detiene</a>
+    <a href="#movimiento"><span class="menu__n">04</span> Salir del edificio gris</a>
+    <a href="#agenda"><span class="menu__n">05</span> Agenda</a>
+    <a href="#sumate"><span class="menu__n">06</span> Súmate</a>
+  </nav>
+  <p class="menu__foot meta">San José · Costa Rica · <span data-clock>—</span></p>
+</div>
+
+<main id="main">
+
+<!-- ══════════════ 01 · PORTADA ══════════════
+     Tres cosas y un ecosistema.
+
+     «Ágora» sigue donde estaba, cruzando el borde del panel de video
+     —tinta sobre el papel, crema sobre la imagen— pero ahora se
+     imprime en cuatro capas desplazadas, como un cartel mal
+     registrado en una imprenta de barrio. Las capas se separan con el
+     movimiento del ratón: la profundidad no viene de una sombra, sino
+     de que la palabra está impresa varias veces.
+
+     «nadie avanza solo.» pasa al centro. Es la idea; todo lo demás
+     orbita a su alrededor.
+
+     Y alrededor, las preguntas — las mismas de siempre, ahora
+     repartidas por todo el espacio en vez de amontonadas en una
+     esquina. Son las preguntas que se hace una sociedad. -->
+<section class="cover tiene-umbral" id="top">
+  <!-- El umbral. Aquí ya no hay red: la portada la manda el pincel, y
+       dos sistemas peleándose por el mismo espacio se restaban. Queda
+       sólo el cambio de suelo —oscuro arriba, papel abajo—, que es lo
+       que hace el contraste. data-oscuro invierte la barra encima. -->
+  <div class="umbral" id="raices" data-oscuro aria-hidden="true"></div>
+
+  <div class="preguntas" id="preguntas" aria-hidden="true"></div>
+
+  <div class="cover__meta">
+    <span class="meta">Centro Ágora Costa Rica</span>
+    <span class="meta">San José, CR · <span data-clock>—</span></span>
+  </div>
+
+  <div class="portada" id="portada">
+    <figure class="portada__video" data-parallax="0.10">
+      <video src="assets/video/v01.mp4" poster="assets/img/p01.jpg"
+             autoplay muted loop playsinline preload="metadata"
+             aria-label="Multitud costarricense con banderas en la calle"></video>
+      <span class="portada__vel" aria-hidden="true"></span>
+    </figure>
+
+    <h1 class="portada__marca">
+      <span class="portada__linea portada__centro">Centro</span>
+      <span class="portada__linea portada__agora">
+        <span class="ag ag--4" aria-hidden="true">Ágora</span>
+        <span class="ag ag--3" aria-hidden="true">Ágora</span>
+        <span class="ag ag--2" aria-hidden="true">Ágora</span>
+        <span class="ag ag--1">Ágora</span>
+        <!-- La firma. Va dentro de la palabra, no debajo del bloque:
+             cuelga del final de ÁGORA como si fuera la última sílaba
+             que se sale del renglón. -->
+        <span class="pais" aria-hidden="true">
+          <span class="pais__eco">Costa Rica</span>
+          <span class="pais__t">Costa Rica</span>
+        </span>
+      </span>
+      <span class="visualmente-oculto">Costa Rica</span>
+    </h1>
+
+    <p class="portada__frase">
+      <span class="fr fr--3" aria-hidden="true">nadie avanza solo<i>.</i></span>
+      <span class="fr fr--2" aria-hidden="true">nadie avanza solo<i>.</i></span>
+      <span class="fr fr--1">nadie avanza solo<i class="cover__dot">.</i></span>
+    </p>
+  </div>
+
+  <div class="cover__foot">
+    <div class="cover__ctas">
+      <a class="btn btn--solid" href="#causas">Encontrá tu causa <span class="arw" aria-hidden="true">→</span></a>
+      <a class="tlink" href="#existimos">Por qué existimos <span class="arw" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ MARQUEE ══════════════ -->
+<div class="marquee" aria-hidden="true"><div class="marquee__track" id="marquee"></div></div>
+
+<!-- ══════════════ 02 · POR QUÉ EXISTIMOS ══════════════
+     Vuelve la atmósfera: fondo oscuro, video detrás, texto editorial
+     encima. Es el cambio de aire del recorrido — más íntimo, más
+     reflexivo.
+
+     Y acá el pincel cambia de oficio otra vez. Sobre un fondo oscuro
+     el pigmento no puede verse: es sustractivo, y quitarle luz a algo
+     que ya es casi negro no da nada. Así que el mismo gesto hace otra
+     cosa — el trazo APARTA la penumbra y deja ver el metraje por donde
+     pasa. En vez de pintar, recuerda. -->
+<!-- id histórico: quien tenga guardado #porque cae aquí mismo -->
+<a id="porque" aria-hidden="true" tabindex="-1"></a>
+<section class="band band--dark porque" id="existimos">
+  <div class="porque__fondo" aria-hidden="true">
+    <!-- mp4 y no el .mov original: mismo plano y misma duración, pero
+         de 8,5 MB a 0,64 MB. El .mov venía a 14,9 Mbps, a 48 fps y con
+         pista de audio, en un fondo mudo detrás de un velo. -->
+    <video class="porque__bg" src="assets/video/ciudad.mp4"
+           muted loop playsinline preload="none" data-lazyvid tabindex="-1"
+           aria-hidden="true"></video>
+    <span class="porque__scrim" id="porqueScrim"></span>
+  </div>
+
+  <div class="band__inner porque__inner">
+    <p class="meta" data-reveal>Existimos por algo</p>
+
+    <h2 class="porque__h display" data-reveal style="--reveal-delay:60ms">
+      La mentira que mejor nos gobierna<br>es la de <em>creernos solos</em>
+    </h2>
+
+    <!-- El texto entero, repartido en cinco movimientos que se van
+         alternando de un lado al otro de la página. Es el mismo
+         contenido de antes: lo que cambia es que ya no baja en una
+         sola columna interminable, sino que cruza. Entre medias, las
+         tres personas: no como textura de fondo, sino mirándonos. -->
+    <!-- Una sola columna, de arriba abajo. Antes el contenido iba en
+         bloques que se alternaban de un lado al otro de la rejilla y
+         la sección se leía como dos experiencias distintas; ahora es
+         un único relato y la toma de las tres personas lo interrumpe
+         desde dentro, no desde un lado. -->
+    <div class="relato">
+      <p class="relato__p" data-reveal>
+        Hay un malestar que recorre Latinoamérica y lo hemos sentido. En la mesa familiar que evita
+        el tema para no pelear, en la indignación que sube hasta la garganta y se traga con un
+        «¿y qué voy a hacer yo?». <b>No es apatía.</b> Es la certeza, cada vez más difícil de ignorar,
+        de que algo que dábamos por garantizado se está desgastando frente a nuestros ojos.
+      </p>
+
+      <p class="relato__p" data-reveal style="--reveal-delay:80ms">
+        No fundamos Ágora para representar a nadie. La fundamos porque creemos que el pueblo debe
+        volver a representarse a sí mismo. No te pedimos que creas en nosotros, te pedimos que
+        vuelvas a creer en tu propio poder, ese que solo se enciende cuando se junta
+        <span class="relato__con">con el de otras personas<i>.</i></span>
+      </p>
+
+      <figure class="tres" data-reveal>
+        <!-- Sólo los primeros segundos: después el montaje corta a otra
+             cosa y las tres personas desaparecen. -->
+        <video src="assets/video/v02.mp4" poster="assets/img/p02.jpg"
+               muted loop playsinline preload="none" data-lazyvid
+               data-desde="0.05" data-hasta="2.85"
+               aria-label="Tres personas se dan la mano en un campo"></video>
+        <span class="tres__borde" aria-hidden="true"></span>
+      </figure>
+
+      <h3 class="relato__pregunta display" data-reveal>
+        ¿Qué es Ágora y cuál es su carácter transformador?
+      </h3>
+
+      <p class="relato__p" data-reveal style="--reveal-delay:80ms">
+        En la antigua Grecia, el Ágora era la plaza pública: el lugar donde la gente común se
+        encontraba no a consumir, sino a conversar, decidir y construir comunidad. El Centro Ágora
+        Costa Rica es la recuperación contemporánea de ese espacio sagrado.
+      </p>
+
+      <p class="relato__p" data-reveal style="--reveal-delay:80ms">
+        Su carácter transformador radica en que desarma la trampa del odio y la polarización
+        mediante el encuentro cara a cara. Mientras los liderazgos destructivos lucran dividiendo
+        y sembrando resentimiento, Ágora une mediante causas concretas: el agua, la cultura,
+        la justicia y la dignidad comunitaria.
+      </p>
+
+      <p class="relato__p" data-reveal style="--reveal-delay:80ms">
+        Ágora no busca convencer a todos de pensar igual; busca garantizar que podamos convivir y
+        construir en la diversidad. Transformar a Costa Rica no significa esperar a que una persona
+        «salvadora» llegue al gobierno, sino despertar la convicción de que
+        <b>la ciudadanía organizada es la fuerza más poderosa que existe</b>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ CASA ÁGORA ══════════════
+     Las causas, los paquetes, Lupa Ciudadana (dentro de Democracia
+     Viva) y el acceso a la justicia viven acá adentro — Casa Ágora es
+     el gran contenedor, no un anexo entre varios. El círculo Conectar
+     → Aprender → Actuar tiene su propia sección aparte, justo después
+     de cerrar esta (#circulo): es el gozne hacia «Salir del edificio
+     gris», no un bloque más de la casa. -->
+<section class="band casa" id="casa">
+  <!-- La escena: la casa y el titular comparten sitio en lugar de ir
+       uno encima del otro. La casa no lleva marco, ni fondo, ni sombra
+       de tarjeta —se recorta por su máscara— y queda a la derecha,
+       presente mientras el texto y el interruptor pasan a su lado.
+       Cinco planos, y la casa es sólo uno. El cielo del atardecer ya
+       no está dentro de la pintura —se recortó con ella— sino aquí
+       detrás, en el espacio de la sección: por eso la luz que baña la
+       casa y la luz de la página son la misma luz. Cada plano se
+       mueve a su ritmo con el scroll, que es lo que separa el fondo
+       de la casa. -->
+  <!-- ── EL ESCENARIO ──
+       Deja de ser un bloque más y pasa a ser el fondo de todo el
+       segmento: queda fijo mientras el contenido pasa por delante. La
+       casa no acompaña a un párrafo, sostiene la sección entera. Al
+       acabar el <section> el sticky se suelta solo, así que en
+       «Nuestras causas» no queda rastro. -->
+  <div class="casa__escenario" id="casaEscena" aria-hidden="true">
+    <div class="casa__plano">
+      <!-- La red viva: el mismo organismo que cierra el sitio en «Queremos
+           tu tiempo». No es una copia — es otra instancia del mismo módulo,
+           que ya se monta solo con [data-red]. Va en el fondo del
+           apilamiento, detrás de la casa recortada, y con densidad propia
+           (0.9) porque este bloque es más alto que aquella banda y con la
+           de serie la red quedaba casi invisible. -->
+      <div class="casa__red" data-red="0.9" aria-hidden="true"><canvas></canvas></div>
+      <div class="casa__cielo" aria-hidden="true"></div>
+      <div class="casa__bruma" aria-hidden="true"></div>
+
+      <figure class="casa__lamina" id="casaLamina">
+        <!-- La pintura se monta sobre una malla con relieve y la cámara
+             se mueve. Si no hay WebGL el lienzo no se dibuja nunca y
+             queda la <img>, que lleva la misma máscara por CSS: tampoco
+             entonces aparece un rectángulo. -->
+        <canvas class="casa__lienzo" id="casaLienzo" aria-hidden="true"></canvas>
+        <img src="assets/img/casa-fachada.jpg" width="1600" height="1067"
+             alt="Casa Ágora: una casa de zócalo azul y cal, con la puerta abierta a un zaguán iluminado"
+             loading="lazy" decoding="async">
+        <span class="casa__suelo" aria-hidden="true"></span>
+      </figure>
+
+      <!-- El velo va por delante de la casa y por detrás del relato: es
+           lo que deja leer el texto sin apagar el escenario. -->
+      <div class="casa__velo"></div>
+    </div>
+  </div>
+
+  <!-- ── EL RELATO ──
+       Sube sobre el escenario con un margen negativo y corre por
+       delante. Cada bloque lleva su propio velo para que el texto se
+       lea sin apagar la casa. -->
+  <div class="casa__relato">
+  <div class="band__inner casa__rotulo" data-escena="fachada">
+    <div class="sec-head casa__head">
+      <p class="casa__num" data-reveal><span class="casa__num-t">Casa Ágora · Escazú, Costa Rica</span></p>
+      <h2 class="sec-head__h display" data-reveal style="--reveal-delay:60ms">
+        Casa Ágora,<br>el lugar que <em>te hacía falta</em>.
+      </h2>
+    </div>
+
+    <!-- Todo lo que sigue ocurre acá adentro, no en secciones aparte:
+         causas, paquetes, justicia, mercado y el círculo. -->
+    <p class="prose" data-reveal style="--reveal-delay:120ms">
+      Con la comunidad ya construida, el segundo paso es consolidar Casa Ágora como la
+      infraestructura física del proyecto: los Paquetes Ágora, talleres, la cafetería, el bazar,
+      el mercado de los sábados, economía circular, encuentros, formación y el acceso a la
+      justicia con el IIRESODH. Es el lugar donde conectamos, aprendemos y actuamos, y también
+      parte de cómo Ágora se sostiene.
+    </p>
+
+    <!-- El interruptor vive junto a la casa que gobierna: al pasar a
+         sábado la cámara se va al portón, y hay que poder verlo. -->
+    <div class="casa__semana" id="casaSemana" data-reveal>
+      <div class="casa__dias" role="tablist" aria-label="La semana de Casa Ágora">
+        <button class="casa__dia is-en" type="button" role="tab" aria-selected="true"  data-dia="0">Entre semana</button>
+        <button class="casa__dia"       type="button" role="tab" aria-selected="false" data-dia="1">Los sábados</button>
+      </div>
+      <div class="casa__estados">
+        <p class="casa__estado is-en" data-dia="0">La puerta siempre está abierta. Tomate un café, explorá nuestros recursos, participá en un taller, hacé una consulta jurídica, encontrá un espacio. Conversá, aprendé, compartí y construí comunidad. Porque casi todo lo que pasa acá empieza así: una conversación, un taller, una nueva conciencia, una idea que se convierte en acción para fortalecer las comunidades que más lo necesitan. Y, sobre todo, gente que vuelve.</p>
+        <p class="casa__estado"       data-dia="1">El portón se abre y el patio se llena. Pequeños emprendimientos traen lo que hacen, y la casa se convierte en un mercado que conecta y promueve la responsabilidad social y la economía circular. Es la misma idea que sostiene una de nuestras causas: relaciones directas entre quien produce y quien consume, puesta a funcionar en nuestro patio.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── las causas ──
+       Antes vivían en su propia sección; ahora son parte de lo que
+       sucede dentro de Casa Ágora, no un proyecto aparte. -->
+  <div class="band__inner casa__causas-b" id="causas" data-escena="cerca">
+    <div class="sec-head">
+      <p class="meta" data-reveal>Tres causas para construir país</p>
+      <h3 class="casa__h display" data-reveal style="--reveal-delay:60ms">Nuestras <em>causas</em></h3>
+    </div>
+    <div class="index" id="causeIndex"></div>
+  </div>
+
+  <!-- Lupa Ciudadana ya no vive acá: es una herramienta de Democracia
+       Viva, no algo que "ocurre en la casa". Se llega a ella desde el
+       índice de causas de arriba → Democracia Viva → su página de
+       detalle (dimensión Lupa Ciudadana, DIMENSIONES.democracia). -->
+
+  <!-- ── los paquetes ──
+       Cada paquete financia una de las causas de arriba: el paquete es
+       lo que Ágora le ofrece a la sociedad, la causa es lo que esos
+       recursos ayudan a hacer posible. Sin explicación financiera
+       complicada. -->
+  <div class="band__inner casa__paquetes-b" id="paquetes" data-escena="cerca">
+    <div class="sec-head sec-head--split">
+      <div>
+        <p class="meta" data-reveal>Cuatro maneras de involucrarse</p>
+        <h3 class="casa__h display" data-reveal style="--reveal-delay:60ms">Los Paquetes <em>Ágora</em></h3>
+      </div>
+      <p class="lede" data-reveal style="--reveal-delay:140ms">
+        Cada Paquete Ágora ayuda a financiar una causa. El paquete es lo que Ágora le ofrece a la
+        sociedad; la causa es lo que esos recursos ayudan a hacer posible.
+      </p>
+    </div>
+    <ol class="casa__paquetes" id="casaPaquetes"></ol>
+  </div>
+
+  <!-- la cartela que abren los paquetes -->
+  <aside class="casa__cartela" id="casaCartela" aria-live="polite" hidden>
+    <button class="casa__cerrar" id="casaCerrar" type="button" aria-label="Cerrar">×</button>
+    <p class="meta" id="casaCartelaTag"></p>
+    <h3 class="casa__cartela-h display" id="casaCartelaH"></h3>
+    <p class="casa__cartela-q" id="casaCartelaQ"></p>
+    <p class="prose" id="casaCartelaT"></p>
+  </aside>
+
+  <!-- El acceso a la justicia con el IIRESODH ya no es una sección
+       aparte: es el cuarto Paquete Ágora, «Ágora Justa», y vive en la
+       lista de arriba con los otros tres. PIDA se explica al abrir su
+       ficha, igual que se explica cualquier paquete. -->
+
+  <!-- ── el propósito ──
+       Dos tiempos, como estaba: la casa se replica, y la casa existe
+       para encontrarse. Es lo que evita que Casa Ágora se lea como «un
+       centro cultural en Escazú» y no como un modelo. -->
+  <div class="band__inner casa__inner" data-escena="cierre">
+    <div class="casa__texto">
+      <p class="casa__golpe" data-reveal>Una casa que puede abrir otras casas.</p>
+      <p class="prose" data-reveal style="--reveal-delay:60ms">
+        Lo que se aprende acá no se queda acá. Cada comunidad que se organiza puede abrir su
+        propia Casa Ágora: un salón comunal, una biblioteca, un espacio que la comunidad cede.
+      </p>
+      <p class="casa__golpe" data-reveal style="--reveal-delay:100ms">Esta casa existe para que haya dónde encontrarse.</p>
+      <p class="prose" data-reveal style="--reveal-delay:140ms">
+        Lo que pasa adentro es lo que la mantiene en pie: las conversaciones, el café, el
+        bazar de artesanías, los talleres, el mercado. El método, lo que Ágora sabe hacer y
+        enseña a hacer, se financia por otro camino: los Paquetes Ágora, con empresas,
+        cooperación y aliados institucionales. De vos, como persona aliada, pedimos tu tiempo
+        y tu talento para continuar construyendo.
+      </p>
+      <!-- El botón «Entrar a la casa» llevaba a casa-agora/, la sala
+           explorable. Se retira por ahora: lo que contaba esa página
+           (los Paquetes, PIDA y el acceso a la justicia, los módulos
+           del método) ya vive en esta misma portada, así que repetirlo
+           en una página aparte era redundante. Los archivos siguen en
+           casa-agora/ y no se han tocado. Para devolverlo, basta con
+           reponer este párrafo:
+
+           <p data-reveal style="--reveal-delay:200ms">
+             <a class="btn btn--solid" href="casa-agora/">Entrar a la casa <span class="arw" aria-hidden="true">→</span></a>
+           </p>
+      -->
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ══════════════ EL CÍRCULO QUE NO SE DETIENE ══════════════
+     Sección propia otra vez, no un bloque dentro de Casa Ágora — es
+     el gozne entre la casa y «Salir del edificio gris»: el círculo
+     que no se detiene es, literalmente, lo que empuja hacia afuera.
+
+     Reconectada tal cual estaba, no rediseñada: la rueda se arma
+     pieza por pieza con el scroll (rueda.svg inyectado inline por
+     initRueda(), no un <img> — un <img> no se puede animar por
+     trozo), .humo suelta pigmento desde el centro cada tanto, y el
+     pincel del sitio (js/campo.js) sigue activo porque esto es
+     band--space, no band--dark. Solo el texto de encuadre es mínimo:
+     sin la lede larga ni el «chain» que tenía la vieja sección
+     Método — eso sí se queda fuera. -->
+<section class="band band--space circulo" id="circulo">
+  <!-- El pincel cobra vida: cada tanto revienta una bomba de pigmento
+       de colores y se dispersa. Ver js/humo.js. -->
+  <div class="humo" aria-hidden="true"><canvas></canvas></div>
+  <div class="band__inner">
+    <div class="sec-head">
+      <h2 class="sec-head__h display" data-reveal>El círculo <em>que no se detiene</em>.</h2>
+      <p class="lede" data-reveal style="--reveal-delay:80ms">
+        Acá conectamos, aprendemos y actuamos, y volvemos a conectar. No es una vez: es un
+        círculo que no se detiene.
+      </p>
+    </div>
+  </div>
+
+  <!-- Scroll-scrubbed cycle: la rueda se arma y los pasos avanzan juntos. -->
+  <div class="cycle" id="cycle">
+    <div class="cycle__sticky">
+      <!-- La rueda de carreta. Gira con el scroll: la persona baja, la
+           rueda avanza, y el paso que queda arriba es el que se está
+           explicando al lado. Se genera con manifiesto/rueda.py. -->
+      <div class="cycle__ring" id="cycleRueda" aria-hidden="true"></div>
+      <ol class="cycle__steps" id="cycleSteps"></ol>
+    </div>
+    <div class="cycle__rail" id="cycleRail" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ══════════════ SALGAMOS DEL EDIFICIO GRIS ══════════════
+     Causas, Paquetes y Lupa Ciudadana ya no son secciones propias —
+     viven dentro de Casa Ágora. Esta es la siguiente parada del
+     recorrido: la misma señal de televisor de siempre, sin el rótulo
+     de «fases» que tuvo brevemente. -->
+<div class="transmision" id="transmision">
+  <!-- El aparato. No es un componente de interfaz: es el fondo entero,
+       demasiado grande para caber, recortado por los bordes. Uno no
+       mira la televisión — está dentro de su transmisión. -->
+  <div class="tele" aria-hidden="true">
+    <div class="tele__mueble">
+      <div class="tele__pantalla" id="teleZona">
+        <span class="tele__barras"></span>
+        <video class="tele__video" src="assets/video/v06.mp4" poster="assets/img/p06.jpg"
+               muted loop playsinline preload="none" data-lazyvid tabindex="-1"></video>
+        <span class="tele__calor"></span>
+        <span class="tele__grano"></span>
+        <canvas class="tele__ruido" id="senalRuido"></canvas>
+        <span class="tele__lineas"></span>
+        <span class="tele__vidrio"></span>
+      </div>
+      <div class="tele__frente">
+        <p class="tele__placa"><span>ÁGORA</span><i>·</i><span>CANAL ABIERTO</span></p>
+        <span class="tele__perilla"></span>
+        <span class="tele__perilla"></span>
+      </div>
+    </div>
+  </div>
+
+  <section class="band band--dark caravanas" id="movimiento">
+    <div class="band__inner caravanas__inner">
+      <p class="meta" data-reveal>Caravanas Democráticas</p>
+      <h2 class="caravanas__h display" data-reveal style="--reveal-delay:60ms">
+        Salir del<br>edificio gris.
+      </h2>
+      <div class="caravanas__cols prose">
+        <p data-reveal style="--reveal-delay:120ms">
+          Hay momentos en la historia en que una sociedad necesita cambiar. Y quizás uno de nuestros
+          mayores desafíos hoy sea que cada vez nos vemos menos, nos encontramos menos, nos
+          organizamos menos. Vivimos bajo una lógica que nos empuja al aislamiento, a pensar que
+          cada quien debe resolver su propio camino. Pero ninguna sociedad avanza cuando cada
+          persona avanza por separado. La conciencia individual necesita encontrarse con una
+          conciencia social. Con la capacidad de reconocernos en los demás, de organizarnos, de
+          articularnos y de imaginar juntos el mundo que queremos construir.
+        </p>
+        <p data-reveal style="--reveal-delay:140ms">Vayamos donde están las personas. Si nos necesitamos mutuamente, no podemos construir país desde un escritorio.</p>
+        <p data-reveal style="--reveal-delay:200ms">Las Caravanas Democráticas son nuestra manera de salir al encuentro de las comunidades: poner capacidades, conocimiento y ganas de ayudar en común. No vamos a decirle a nadie qué hacer: vamos a encontrarnos, a escuchar, a aprender y a construir con las personas.</p>
+        <p data-reveal style="--reveal-delay:220ms">
+          Fortalecemos redes sociales, producimos contenido audiovisual y grabamos conversaciones
+          con las comunidades que visitamos: campañas, videos, contenido alrededor de cada causa,
+          y colaboraciones con creadores de contenido que ya tienen esa conversación abierta.
+        </p>
+        <p data-reveal style="--reveal-delay:240ms">
+          También buscamos voces de posiciones políticas distintas, de izquierda y de derecha: no
+          para darles la razón ni quitársela, sino para conocerlas y mostrarlas. Ágora no se presenta
+          acá como quien ya tiene todas las respuestas. La estrategia es escuchar, preguntar,
+          documentar, analizar y conversar, en ese orden.
+        </p>
+        <p data-reveal style="--reveal-delay:260ms"><a class="tlink" href="#sumate">Sumá tu talento <span class="arw" aria-hidden="true">→</span></a></p>
+      </div>
+      <p class="caravanas__pista meta" data-reveal style="--reveal-delay:320ms">Movete: la señal se interrumpe</p>
+    </div>
+  </section>
+
+<!-- ══════════════ 07 · CONSCIENCIAS ══════════════ -->
+<section class="band band--dark consciencias" id="consciencias">
+  <div class="band__inner">
+    <!-- El punto de inflexión. El texto es el mismo de siempre; lo que
+         cambia es quién lo dice y con qué voz: el nombre de la sección
+         deja de ser una etiqueta pequeña y pasa a ocupar la pantalla,
+         impreso en capas como ÁGORA. Aquí el recorrido cambia de
+         estado, y tiene que notarse antes de leer una sola palabra. -->
+    <div class="rev" id="rev">
+      <h2 class="rev__t display" data-reveal>
+        <span class="rev__l rev__l--4" aria-hidden="true">Revolución<br>de las consciencias</span>
+        <span class="rev__l rev__l--3" aria-hidden="true">Revolución<br>de las consciencias</span>
+        <span class="rev__l rev__l--2" aria-hidden="true">Revolución<br>de las consciencias</span>
+        <span class="rev__l rev__l--1">Revolución<br>de las consciencias</span>
+      </h2>
+
+      <p class="rev__sub display" data-reveal style="--reveal-delay:120ms">
+        Antes de transformar el país,<br>hay que atreverse a imaginarlo
+      </p>
+    </div>
+
+    <!-- Las dos voces, en horizontal. El texto es largo y en una sola
+         medida caía a plomo durante tres pantallas; repartido en
+         columnas ocupa la mitad de alto y se lee como una página. -->
+    <div class="voces" id="voices"></div>
+  </div>
+</section>
+
+</div>
+
+<!-- ══════════════ AGENDA ══════════════ -->
+<section class="band band--dark agenda" id="agenda">
+  <!-- Aquí sí: la red acompaña toda la sección, del título a la última
+       fecha. Es uno de los dos momentos en que aparece. -->
+  <div class="agenda__red" data-red aria-hidden="true"><canvas></canvas></div>
+
+  <div class="band__inner" id="rev-agenda">
+    <!-- Tres líneas que son una sola frase, no tres títulos peleándose:
+         el tamaño baja en cada escalón y eso las encadena. La agenda
+         manda, el método explica de dónde viene y las olas anuncian lo
+         que llega. -->
+    <div class="agenda__cabeza">
+      <h2 class="agenda__t display" data-reveal>
+        <span class="rev__l rev__l--4" aria-hidden="true">Agenda cultural</span>
+        <span class="rev__l rev__l--3" aria-hidden="true">Agenda cultural</span>
+        <span class="rev__l rev__l--2" aria-hidden="true">Agenda cultural</span>
+        <span class="rev__l rev__l--1">Agenda cultural</span>
+      </h2>
+      <p class="agenda__t2 display" data-reveal style="--reveal-delay:90ms">Del método al movimiento.</p>
+      <p class="agenda__t3 display" data-reveal style="--reveal-delay:170ms">Estas son las primeras olas.</p>
+      <p class="agenda__pie meta" data-reveal style="--reveal-delay:250ms">
+        Fecha tentativa, lugares y horas quedan por confirmar.
+      </p>
+    </div>
+    <ol class="agenda__lista" id="agendaList"></ol>
+  </div>
+</section>
+
+<!-- ══════════════ SUMATE ══════════════ -->
+<section class="band band--dark sumate" id="sumate">
+  <!-- El recorrido cierra donde empezó: la misma red del umbral. El
+       metraje se queda debajo, muy tenue, sosteniendo el color. -->
+  <div class="sumate__red" data-red aria-hidden="true"><canvas></canvas></div>
+  <video class="sumate__bg" src="assets/video/v09.mp4" poster="assets/img/p11.jpg"
+         muted loop playsinline preload="none" data-lazyvid aria-hidden="true" tabindex="-1"></video>
+  <span class="sumate__scrim" aria-hidden="true"></span>
+
+  <div class="band__inner sumate__inner">
+    <p class="meta" data-reveal>Sumate</p>
+    <h2 class="sumate__h display" data-reveal style="--reveal-delay:60ms">
+      Queremos tu tiempo,<br>tu aliento, tus ganas,<br><em>tu convicción.</em>
+    </h2>
+    <p class="lede" data-reveal style="--reveal-delay:140ms">
+      En un mundo que le pone precio a todo, nuestra propuesta es radical. El cambio no se compra,
+      se construye con compromiso. Cuando le dedicás tiempo a otras personas, algo en tu forma de
+      ver el mundo cambia. Ahí empieza todo.
+    </p>
+
+    <div class="paths" id="paths"></div>
+
+    <!-- Antes era su propia sección («Aliados»); ahora es un nivel más
+         de participación dentro de Sumate: con quién construimos, no
+         solo con qué. -->
+    <div class="sumate__aliados">
+      <p class="meta" data-reveal>No lo haremos solos</p>
+      <h3 class="dual__h display" data-reveal style="--reveal-delay:60ms">Con quién<br>queremos construir</h3>
+      <p class="prose" data-reveal style="--reveal-delay:140ms">Ágora nace abierta. Buscamos manos de todos lados para sostener un proyecto que no le pertenece a nadie en particular, sino a todas las personas.</p>
+      <ul class="allies" id="allies"></ul>
+      <p data-reveal><a class="tlink" href="#email">¿Tu organización quiere sumar? Hablemos <span class="arw" aria-hidden="true">→</span></a></p>
+    </div>
+
+    <form class="signup" id="signup" novalidate>
+      <label for="email">Dejanos tu correo y te avisamos del siguiente encuentro. Sin spam.</label>
+      <div class="signup__row">
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email"
+               placeholder="tu@correo.com" required>
+        <button class="btn btn--solid" type="submit">Avisame</button>
+      </div>
+      <p class="signup__msg" id="signupMsg" role="status"></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="foot">
+  <div class="band__inner foot__inner">
+    <p class="foot__mark display">ágora<span>.</span></p>
+    <div class="foot__meta">
+      <p class="meta">Centro Ágora Costa Rica</p>
+      <p class="meta">San José, Costa Rica · <span data-clock>—</span></p>
+      <p class="meta">Nadie avanza solo · © 2026</p>
+    </div>
+    <nav class="foot__nav" aria-label="Pie">
+      <a href="#existimos">Por qué existimos</a><a href="#casa">Casa Ágora</a>
+      <a href="#circulo">El círculo</a><a href="#movimiento">Salir del edificio gris</a>
+      <a href="#agenda">Agenda</a><a href="#sumate">Sumate</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ══════════════ CAUSE DETAIL (routed) ══════════════ -->
+<article class="detail" id="detail" hidden aria-hidden="true"></article>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="e97952d1-36da-4756-a015-3fd84e63bc2f" data-app-host="app.netlify.com"></script>

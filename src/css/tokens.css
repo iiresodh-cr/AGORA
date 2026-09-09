@@ -1,0 +1,106 @@
+/* ============================================================
+   ÁGORA · Design tokens
+   Derived from the original mockup (BASE Maqueta_Home_Agora).
+   Palette, radii and shadows are preserved; the type system is
+   reduced from five families to four and gains a mono for meta.
+   ============================================================ */
+
+:root {
+  /* ---- Ink & paper ------------------------------------------------ */
+  --ink:        #141310;
+  --ink-2:      #3a382f;
+  --ink-3:      #5b5849;
+  --muted:      #696454;   /* 4.72:1 sobre papel — AA en texto pequeño */
+
+  --paper:      #F0E5CA;
+  --paper-2:    #E7DABB;
+  --paper-3:    #DCCDA9;
+  --cream:      #F6EBCF;
+  --line:       #D9D2C0;
+  --line-soft:  #E2DAC6;
+
+  /* ---- Cause accents ---------------------------------------------- */
+  --blue:       #2438D8;   /* Democracia Viva            */
+  --coral:      #FF4B2B;   /* Niñez y adolescencia       */
+  --green:      #0FA36B;   /* Territorios del Futuro     */
+  --yellow:     #FFC22E;   /* Economías que Conectan     */
+  --violet:     #7A3DE0;   /* reserved                   */
+  /* Bright accents fail AA as small text on paper; these are the
+     darkened siblings used whenever an accent carries words. */
+  --coral-text: #bc3720;   /* 4.52:1 sobre papel */
+
+  /* ---- Type ------------------------------------------------------- */
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --serif:   "Fraunces", Georgia, "Times New Roman", serif;
+  --sans:    "Inter", system-ui, -apple-system, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Fluid scale — clamp(min, preferred, max) ------------------------- */
+  --t-mega:   clamp(3.4rem, 13vw, 12rem);
+  --t-xxl:    clamp(2.6rem, 8vw,  7rem);
+  --t-xl:     clamp(2.1rem, 5.4vw, 4.2rem);
+  --t-lg:     clamp(1.6rem, 3.2vw, 2.6rem);
+  --t-md:     clamp(1.15rem, 1.7vw, 1.4rem);
+  --t-base:   clamp(1rem, 1.1vw, 1.0625rem);
+  --t-sm:     0.9375rem;
+  --t-xs:     0.8125rem;
+  --t-micro:  0.6875rem;
+
+  --lh-tight: 0.88;
+  --lh-snug:  1.04;
+  --lh-body:  1.62;
+
+  --track-tight: -0.025em;
+  --track-meta:   0.14em;
+
+  /* ---- Space ------------------------------------------------------- */
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2.5rem;
+  --s-5: 4rem;
+  --s-6: 6rem;
+  --s-7: 9rem;
+  --s-8: 13rem;
+
+  --gutter: clamp(1.25rem, 4.5vw, 4.5rem);
+  --measure: 62ch;
+  --measure-lead: 46ch;
+
+  /* ---- Shape ------------------------------------------------------- */
+  --r-pill: 99px;
+  --r-card: 20px;
+  --r-media: 4px;
+  --r-sm: 6px;
+
+  /* Signature elevation: hard offset, zero blur, always with a border */
+  --shadow-sticker:    6px 6px 0 var(--ink);
+  --shadow-sticker-lg: 10px 10px 0 var(--ink);
+  --shadow-float:      0 2px 8px rgba(20,19,16,.06), 0 22px 60px rgba(20,19,16,.10);
+
+  /* ---- Motion ------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io:  cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 220ms;
+  --dur-2: 520ms;
+  --dur-3: 900ms;
+
+  --nav-h: 68px;
+}
+
+/* Dark stretches are an interruption, not a theme: they are scoped to
+   .band--dark rather than to a global colour-scheme switch. */
+.band--dark {
+  --ink:   var(--cream);
+  --ink-2: rgba(246,235,207,.78);
+  --ink-3: rgba(246,235,207,.58);
+  --muted: rgba(246,235,207,.5);
+  --line:  rgba(246,235,207,.18);
+  --line-soft: rgba(246,235,207,.10);
+  --paper: #14130F;
+  color: var(--cream);
+  /* The ground must be dark on its own: footage loads lazily and may be
+     absent (slow link, reduced data, decode failure). Without this the
+     section renders cream-on-cream. */
+  background: #14130F;
+}
