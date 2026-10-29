@@ -4,14 +4,16 @@ export default function MobileMenu() {
   return (
     <div className="menu" id="menu" hidden>
       <nav className="menu__list" aria-label="Menú">
-        <a href="#existimos"><span className="menu__n">01</span> La mentira que mejor nos gobierna</a>
-        <a href="#casa"><span className="menu__n">02</span> Casa Ágora</a>
-        <a href="#circulo"><span className="menu__n">03</span> El círculo que no se detiene</a>
-        <a href="#movimiento"><span className="menu__n">04</span> Salir del edificio gris</a>
-        <a href="#agenda"><span className="menu__n">05</span> Agenda</a>
-        <a href="#sumate"><span className="menu__n">06</span> Súmate</a>
+        <a href="#existimos"><span className="menu__n">01</span> Quiénes somos</a>
+        <a href="#hacemos"><span className="menu__n">02</span> Qué hacemos</a>
+        <a href="#causas"><span className="menu__n">03</span> Lo que impulsamos</a>
+        <a href="#casa"><span className="menu__n">04</span> La casa</a>
+        <a href="#circulo"><span className="menu__n">05</span> Cómo conectamos</a>
+        <a href="#agenda"><span className="menu__n">06</span> Agenda</a>
+        <a href="#paquete"><span className="menu__n">07</span> Paquete Ágora</a>
+        <a href="#sumate"><span className="menu__n">08</span> Sumate</a>
       </nav>
-      <p className="menu__foot meta">San José · Costa Rica · <span data-clock>—</span></p>
+      <p className="menu__foot meta">Casa Ágora · Nadie avanza solo</p>
     </div>
   );
 }

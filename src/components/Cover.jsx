@@ -3,13 +3,19 @@ import React from 'react';
 export default function Cover() {
   return (
     <section className="cover tiene-umbral" id="top">
+      {/* El umbral. Aquí ya no hay red: la portada la manda el pincel, y
+           dos sistemas peleándose por el mismo espacio se restaban. Queda
+           sólo el cambio de suelo —oscuro arriba, papel abajo—, que es lo
+           que hace el contraste. data-oscuro invierte la barra encima. */}
       <div className="umbral" id="raices" data-oscuro aria-hidden="true"></div>
 
       <div className="preguntas" id="preguntas" aria-hidden="true"></div>
 
+      {/* Esta fila no se puede quitar: medirUmbral() la usa para saber
+           dónde termina la franja oscura de arriba. */}
       <div className="cover__meta">
-        <span className="meta">Centro Ágora Costa Rica</span>
-        <span className="meta">San José, CR · <span data-clock>—</span></span>
+        <span className="meta">Casa Ágora</span>
+        <span className="meta">Conectar · Fortalecer · Impulsar</span>
       </div>
 
       <div className="portada" id="portada">
@@ -28,18 +34,20 @@ export default function Cover() {
         </figure>
 
         <h1 className="portada__marca">
-          <span className="portada__linea portada__centro">Centro</span>
+          {/* «Casa» lleva el mismo tratamiento que ÁGORA: las dos palabras
+               son el nombre, así que las dos se imprimen en cuatro capas. */}
+          <span className="portada__linea portada__casa">
+            <span className="ag ag--4" aria-hidden="true">Casa</span>
+            <span className="ag ag--3" aria-hidden="true">Casa</span>
+            <span className="ag ag--2" aria-hidden="true">Casa</span>
+            <span className="ag ag--1">Casa</span>
+          </span>
           <span className="portada__linea portada__agora">
             <span className="ag ag--4" aria-hidden="true">Ágora</span>
             <span className="ag ag--3" aria-hidden="true">Ágora</span>
             <span className="ag ag--2" aria-hidden="true">Ágora</span>
             <span className="ag ag--1">Ágora</span>
-            <span className="pais" aria-hidden="true">
-              <span className="pais__eco">Costa Rica</span>
-              <span className="pais__t">Costa Rica</span>
-            </span>
           </span>
-          <span className="visualmente-oculto">Costa Rica</span>
         </h1>
 
         <p className="portada__frase">
@@ -50,13 +58,10 @@ export default function Cover() {
       </div>
 
       <div className="cover__foot">
+        <p className="cover__def">Casa Ágora <b>conecta</b> personas, comunidades e iniciativas para que se organicen y actúen juntas, con asesoría técnica y proyectos propios en democracia y derechos humanos.</p>
         <div className="cover__ctas">
-          <a className="btn btn--solid" href="#causas">
-            Encontrá tu causa <span className="arw" aria-hidden="true">→</span>
-          </a>
-          <a className="tlink" href="#existimos">
-            Por qué existimos <span className="arw" aria-hidden="true">→</span>
-          </a>
+          <a className="btn btn--solid" href="#sumate-org">Tengo una iniciativa <span className="arw" aria-hidden="true">→</span></a>
+          <a className="tlink" href="#sumate-persona">Quiero sumarme <span className="arw" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>

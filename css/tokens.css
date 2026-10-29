@@ -41,10 +41,10 @@
   --t-xl:     clamp(2.1rem, 5.4vw, 4.2rem);
   --t-lg:     clamp(1.6rem, 3.2vw, 2.6rem);
   --t-md:     clamp(1.15rem, 1.7vw, 1.4rem);
-  --t-base:   clamp(1rem, 1.1vw, 1.0625rem);
-  --t-sm:     0.9375rem;
-  --t-xs:     0.8125rem;
-  --t-micro:  0.6875rem;
+  --t-base:   clamp(1.0625rem, 1.2vw, 1.125rem);
+  --t-sm:     1.0625rem;
+  --t-xs:     0.875rem;
+  --t-micro:  0.78rem;
 
   --lh-tight: 0.88;
   --lh-snug:  1.04;

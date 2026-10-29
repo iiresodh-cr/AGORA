@@ -5,10 +5,12 @@ import MobileMenu from './components/MobileMenu';
 import Cover from './components/Cover';
 import Marquee from './components/Marquee';
 import Porque from './components/Porque';
+import Hacemos from './components/Hacemos';
+import Impulsamos from './components/Impulsamos';
 import CasaAgora from './components/CasaAgora';
 import Circulo from './components/Circulo';
-import Transmision from './components/Transmision';
 import Agenda from './components/Agenda';
+import Paquete from './components/Paquete';
 import Sumate from './components/Sumate';
 import Footer from './components/Footer';
 import CauseDetail from './components/CauseDetail';
@@ -29,10 +31,12 @@ export default function App() {
         <Cover />
         <Marquee />
         <Porque />
+        <Hacemos />
+        <Impulsamos />
         <CasaAgora />
         <Circulo />
-        <Transmision />
         <Agenda />
+        <Paquete />
         <Sumate />
       </main>
       <Footer />
